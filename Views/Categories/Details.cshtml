@@ -1,0 +1,37 @@
+﻿@model ProyectoWebCommercialLopez.Models.Category
+
+@{
+    ViewData["Title"] = "Detalles de Categoría";
+}
+
+<h1 class="text-3xl font-bold text-gray-800 mb-6">Detalles de Categoría</h1>
+
+<div class="max-w-xl bg-white p-6 rounded-xl shadow border border-gray-200">
+    <dl class="divide-y divide-gray-200">
+
+        <!-- Nombre -->
+        <div class="py-4">
+            <dt class="text-sm font-semibold text-gray-700">Nombre</dt>
+            <dd class="mt-1 text-gray-900">@Model.Name</dd>
+        </div>
+
+        <!-- Descripción -->
+        <div class="py-4">
+            <dt class="text-sm font-semibold text-gray-700">Descripción</dt>
+            <dd class="mt-1 text-gray-900">@Model.Description</dd>
+        </div>
+
+    </dl>
+
+    <div class="mt-6 flex items-center justify-between">
+        <a asp-action="Index"
+           class="text-gray-600 hover:text-gray-800 transition">
+            ← Volver
+        </a>
+
+        <a asp-action="Edit" asp-route-id="@Model.Id"
+           class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+            Editar
+        </a>
+    </div>
+</div>

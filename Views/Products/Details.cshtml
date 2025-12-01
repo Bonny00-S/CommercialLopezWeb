@@ -1,0 +1,95 @@
+﻿@model ProyectoWebCommercialLopez.Models.Product
+
+@{
+    ViewData["Title"] = "Detalles del Producto";
+}
+
+<h1 class="text-3xl font-bold text-gray-800 mb-6">Detalles del Producto</h1>
+
+<div class="max-w-4xl bg-white p-6 rounded-xl shadow border border-gray-200">
+
+    <!-- IMAGEN PRINCIPAL -->
+    <div class="flex justify-center mb-6">
+        @if (!string.IsNullOrEmpty(Model.Image))
+        {
+            <img src="~/images/products/@Model.Image"
+                 class="h-48 w-48 object-cover border rounded-xl shadow" />
+        }
+        else
+        {
+            <div class="h-48 w-48 bg-gray-200 border rounded-xl flex items-center justify-center text-gray-500 text-sm">
+                Sin imagen
+            </div>
+        }
+    </div>
+
+    <!-- INFO DEL PRODUCTO -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Columna 1 -->
+        <div class="space-y-4">
+
+            <div>
+                <span class="font-semibold text-gray-700">Descripción:</span>
+                <p class="text-gray-800">@Model.Description</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Precio:</span>
+                <p class="text-gray-800">$@Model.Price</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Stock:</span>
+                <p class="text-gray-800">@Model.Stock unidades</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Categoría:</span>
+                <p class="text-gray-800">@Model.Category?.Name</p>
+            </div>
+        </div>
+
+        <!-- Columna 2 -->
+        <div class="space-y-4">
+
+            <div>
+                <span class="font-semibold text-gray-700">Almacén:</span>
+                <p class="text-gray-800">@Model.Warehouse?.Name</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Proveedor:</span>
+                <p class="text-gray-800">@Model.Supplier?.NIT</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Creado:</span>
+                <p class="text-gray-800">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Última modificación:</span>
+                <p class="text-gray-800">
+                    @(Model.ModifiedAt?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca")
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="mt-8 flex justify-between">
+
+        <a asp-action="Index"
+           class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition">
+            ← Volver
+        </a>
+
+        <a asp-action="Edit" asp-route-id="@Model.Id"
+           class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+            Editar
+        </a>
+    </div>
+
+</div>

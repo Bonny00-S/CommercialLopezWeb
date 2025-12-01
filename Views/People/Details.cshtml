@@ -1,0 +1,119 @@
+﻿@model ProyectoWebCommercialLopez.Models.Person
+
+@{
+    ViewData["Title"] = "Detalles de Persona";
+
+    string estado = Model.State == 1 ? "Activo" : "Inactivo";
+    string colorEstado = Model.State == 1 ? "text-green-400" : "text-red-400";
+
+    string rol = Model.User?.Role switch
+    {
+        1 => "Admin",
+        2 => "Cashier",
+        3 => "Store Supervisor",
+        _ => "Sin rol"
+    };
+}
+
+<div class="flex justify-center items-center min-h-screen">
+
+    <div class="w-full max-w-2xl bg-[#2a2a2a] p-8 rounded-2xl shadow-xl border border-[#4a4a4a]">
+
+        <h1 class="text-3xl font-bold text-white text-center mb-6">
+            Detalles de Persona
+        </h1>
+
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+
+            <!-- CI -->
+            <div>
+                <dt class="text-orange-400 font-semibold">Cédula</dt>
+                <dd class="bg-[#3a3a3a] p-2 mt-1 text-gray-300 rounded-lg border border-[#4a4a4a]">
+                    @Model.CI
+                </dd>
+            </div>
+
+            <!-- Nombre -->
+            <div>
+                <dt class="text-orange-400 font-semibold">Nombre</dt>
+                <dd class="bg-[#3a3a3a] p-2 mt-1 text-gray-300 rounded-lg border border-[#4a4a4a]">
+                    @Model.Name
+                </dd>
+            </div>
+
+            <!-- Apellido -->
+            <div>
+                <dt class="text-orange-400 font-semibold">Apellido</dt>
+                <dd class="bg-[#3a3a3a] p-2 mt-1 text-gray-300 rounded-lg border border-[#4a4a4a]">
+                    @Model.LastName
+                </dd>
+            </div>
+
+            <!-- Fecha nacimiento -->
+            <div>
+                <dt class="text-orange-400 font-semibold">Fecha Nacimiento</dt>
+                <dd class="bg-[#3a3a3a] p-2 mt-1 text-gray-300 rounded-lg border border-[#4a4a4a]">
+                    @Model.DateBirth?.ToString("yyyy-MM-dd")
+                </dd>
+            </div>
+
+            <!-- Dirección -->
+            <div>
+                <dt class="text-orange-400 font-semibold">Dirección</dt>
+                <dd class="bg-[#3a3a3a] p-2 mt-1 text-gray-300 rounded-lg border border-[#4a4a4a]">
+                    @Model.Address
+                </dd>
+            </div>
+
+            <!-- Teléfono -->
+            <div>
+                <dt class="text-orange-400 font-semibold">Teléfono</dt>
+                <dd class="bg-[#3a3a3a] p-2 mt-1 text-gray-300 rounded-lg border border-[#4a4a4a]">
+                    @Model.Phone
+                </dd>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <dt class="text-orange-400 font-semibold">Email</dt>
+                <dd class="bg-[#3a3a3a] p-2 mt-1 text-gray-300 rounded-lg border border-[#4a4a4a] break-all">
+                    @Model.Email
+                </dd>
+            </div>
+
+            <!-- Estado -->
+            <div>
+                <dt class="text-orange-400 font-semibold">Estado</dt>
+                <dd class="p-2 mt-1 rounded-lg border border-[#4a4a4a] bg-[#3a3a3a] @colorEstado font-semibold">
+                    @estado
+                </dd>
+            </div>
+
+            <!-- Rol -->
+            <div>
+                <dt class="text-orange-400 font-semibold">Rol</dt>
+                <dd class="bg-[#3a3a3a] p-2 mt-1 text-gray-300 rounded-lg border border-[#4a4a4a]">
+                    @rol
+                </dd>
+            </div>
+
+        </dl>
+
+        <!-- Botones -->
+        <div class="flex justify-between mt-8">
+
+            <a asp-action="Edit" asp-route-id="@Model.Id"
+               class="px-6 py-2 rounded-lg bg-orange-500 text-white font-semibold hover:bg-orange-600 transition">
+                Editar
+            </a>
+
+            <a asp-action="Index"
+               class="px-6 py-2 rounded-lg bg-[#3a3a3a] text-gray-300 font-semibold border border-[#4a4a4a] hover:bg-[#4a4a4a] transition">
+                Volver
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

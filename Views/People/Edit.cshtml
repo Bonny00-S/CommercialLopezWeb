@@ -1,0 +1,128 @@
+﻿@model ProyectoWebCommercialLopez.Models.Person
+
+@{
+    ViewData["Title"] = "Editar Persona";
+}
+
+<h1 class="text-2xl font-bold mb-4">Editar Persona</h1>
+
+<div class="max-w-xl">
+    <form id="personForm" asp-action="Edit" method="post" class="space-y-4">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <!-- CI -->
+        <div>
+            <label asp-for="CI" class="block font-medium mb-1"></label>
+            <input asp-for="CI" id="ci" class="w-full border rounded p-2" />
+            <span asp-validation-for="CI" class="text-danger"></span>
+            <span id="ciError" class="text-red-600 text-sm"></span>
+        </div>
+
+        <!-- Nombre -->
+        <div>
+            <label asp-for="Name" class="block font-medium mb-1"></label>
+            <input asp-for="Name" id="Name" class="w-full border rounded p-2" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+            <span id="NameError" class="text-red-600 text-sm"></span>
+        </div>
+
+        <!-- Apellido -->
+        <div>
+            <label asp-for="LastName" class="block font-medium mb-1"></label>
+            <input asp-for="LastName" id="LastName" class="w-full border rounded p-2" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+            <span id="LastNameError" class="text-red-600 text-sm"></span>
+        </div>
+
+        <!-- Fecha nacimiento -->
+        <div>
+            <label asp-for="DateBirth" class="block font-medium mb-1"></label>
+            <input asp-for="DateBirth" id="DateBirth" type="date" class="w-full border rounded p-2" />
+            <span asp-validation-for="DateBirth" class="text-danger"></span>
+            <span id="DateBirthError" class="text-red-600 text-sm"></span>
+        </div>
+
+        <!-- Dirección -->
+        <div>
+            <label asp-for="Address" class="block font-medium mb-1"></label>
+            <input asp-for="Address" id="Address" class="w-full border rounded p-2" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+            <span id="AddressError" class="text-red-600 text-sm"></span>
+        </div>
+
+        <!-- Teléfono -->
+        <div>
+            <label asp-for="Phone" class="block font-medium mb-1"></label>
+            <input asp-for="Phone" id="Phone" class="w-full border rounded p-2" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+            <span id="PhoneError" class="text-red-600 text-sm"></span>
+        </div>
+
+        <!-- Email -->
+        <div>
+            <label asp-for="Email" class="block font-medium mb-1"></label>
+            <input asp-for="Email" id="Email" class="w-full border rounded p-2" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+            <span id="EmailError" class="text-red-600 text-sm"></span>
+        </div>
+
+        <!-- CAMPO ROL (DESDE USER) -->
+        <div>
+            <label class="block font-medium mb-1">Rol del Usuario</label>
+            <select name="Role" class="w-full border rounded p-2" id="Role">
+                <option value="1" selected="@(Model.User?.Role == 1)">Administrador</option>
+                <option value="2" selected="@(Model.User?.Role == 2)">Cajero</option>
+                <option value="3" selected="@(Model.User?.Role == 3)">Almacenamiento</option>
+
+            </select>
+            <span id="RoleError" class="text-red-600 text-sm"></span>
+        </div>
+
+        <!-- Hidden fields -->
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CreatedAt" />
+        <input type="hidden" asp-for="CreatedBy" />
+        <input type="hidden" asp-for="State" />
+        <input type="hidden" asp-for="ModifiedAt" />
+        <input type="hidden" asp-for="ModifiedBy" />
+
+        <!-- Botón -->
+        <div>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Guardar Cambios
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<!-- Botón volver -->
+<div class="mt-4">
+    <a asp-action="Index" class="text-blue-600 hover:underline">← Volver a la lista</a>
+</div>
+
+@if (ViewBag.Success == true)
+{
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+            <h2 class="text-xl font-bold text-green-600 mb-4">¡Cambios Guardados!</h2>
+
+            <p class="text-gray-700 mb-4">
+                La información fue actualizada correctamente.
+            </p>
+
+            <button onclick="window.location.href='@Url.Action("Index")'"
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">
+                Aceptar
+            </button>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/scripts/peoplejs/person-edit-validation.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,101 @@
+﻿@model ProyectoWebCommercialLopez.Models.Product
+
+@{
+    ViewData["Title"] = "Eliminar Producto";
+}
+
+<h1 class="text-3xl font-bold text-red-600 mb-6">Eliminar Producto</h1>
+
+<div class="max-w-3xl bg-white p-6 rounded-xl shadow border border-gray-200">
+
+    <!-- ALERTA DE CONFIRMACIÓN -->
+    <div class="bg-red-100 border border-red-300 text-red-800 px-4 py-3 rounded-lg mb-6">
+        <strong class="font-bold text-lg">¿Estás seguro?</strong>
+        <p>Esta acción eliminará permanentemente el producto del sistema.</p>
+    </div>
+
+    <!-- CONTENIDO DEL PRODUCTO -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- IMAGEN -->
+        <div class="flex justify-center">
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <img src="~/images/products/@Model.Image"
+                     class="h-40 w-40 object-cover border rounded-xl shadow" />
+            }
+            else
+            {
+                <div class="h-40 w-40 bg-gray-200 border rounded-xl flex items-center justify-center text-gray-500 text-sm">
+                    Sin imagen
+                </div>
+            }
+        </div>
+
+        <!-- INFORMACIÓN -->
+        <div class="md:col-span-2 space-y-3">
+
+            <div>
+                <span class="font-semibold text-gray-700">Descripción:</span>
+                <p class="text-gray-800">@Model.Description</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Precio:</span>
+                <p class="text-gray-800">$@Model.Price</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Stock:</span>
+                <p class="text-gray-800">@Model.Stock unidades</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Categoría:</span>
+                <p class="text-gray-800">@Model.Category?.Name</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Almacén:</span>
+                <p class="text-gray-800">@Model.Warehouse?.Name</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Proveedor:</span>
+                <p class="text-gray-800">@Model.Supplier?.NIT</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Creado:</span>
+                <p class="text-gray-800">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+            </div>
+
+            <div>
+                <span class="font-semibold text-gray-700">Última modificación:</span>
+                <p class="text-gray-800">
+                    @(Model.ModifiedAt?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca")
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="mt-8 flex justify-between">
+
+        <a asp-action="Index"
+           class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition">
+            ← Cancelar
+        </a>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+
+            <button type="submit"
+                    class="px-5 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition">
+                Eliminar definitivamente
+            </button>
+        </form>
+    </div>
+
+</div>

@@ -1,0 +1,108 @@
+﻿@model ProyectoWebCommercialLopez.Models.Product
+
+@{
+    ViewData["Title"] = "Editar Producto";
+}
+
+<h1 class="text-3xl font-bold text-gray-800 mb-6">Editar Producto</h1>
+
+<div class="max-w-3xl bg-white p-6 rounded-xl shadow border border-gray-200">
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data" class="space-y-6">
+
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Image" /> <!-- Mantener la imagen previa -->
+        <!-- DESCRIPCIÓN -->
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Descripción</label>
+            <input asp-for="Description" id="Description"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+            <div id="descriptionError" class="text-red-600 text-sm mt-1"></div>
+        </div>
+
+        <!-- PRECIO -->
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Precio</label>
+            <input asp-for="Price" id="Price"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+            <div id="priceError" class="text-red-600 text-sm mt-1"></div>
+        </div>
+
+        <!-- STOCK -->
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Stock</label>
+            <input asp-for="Stock" id="Stock"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+            <div id="stockError" class="text-red-600 text-sm mt-1"></div>
+        </div>
+
+        <!-- IMAGEN ACTUAL -->
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Imagen actual</label>
+
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <img src="~/images/products/@Model.Image"
+                     class="h-32 w-32 object-cover border rounded-xl shadow mb-3" />
+            }
+            else
+            {
+                <div class="h-32 w-32 bg-gray-200 border rounded-xl flex items-center justify-center text-gray-500 text-sm">
+                    Sin imagen
+                </div>
+            }
+        </div>
+
+        <!-- NUEVA IMAGEN -->
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Nueva imagen</label>
+            <input type="file" name="ImageFile" id="imageFileInput"
+                   accept="image/*"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+
+            <!-- PREVIEW REAL DE LA NUEVA IMAGEN -->
+            <img id="imagePreview"
+                 class="h-32 w-32 object-cover border rounded-xl shadow mt-3 hidden" />
+
+            <div id="imageError" class="text-red-600 text-sm mt-1"></div>
+        </div>
+
+        <!-- CATEGORÍA -->
+        <div>
+            <label asp-for="CategoryId" class="block text-sm font-semibold text-gray-700 mb-1"></label>
+            <select asp-for="CategoryId" id="CategoryId" asp-items="ViewBag.CategoryId"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white"></select>
+        </div>
+
+        <!-- ALMACÉN -->
+        <div>
+            <label asp-for="WarehouseId" class="block text-sm font-semibold text-gray-700 mb-1"></label>
+            <select asp-for="WarehouseId" id="WarehouseId" asp-items="ViewBag.WarehouseId"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white"></select>
+        </div>
+
+        <!-- PROVEEDOR -->
+        <div>
+            <label asp-for="SupplierId" class="block text-sm font-semibold text-gray-700 mb-1"></label>
+            <select asp-for="SupplierId" id="SupplierId" asp-items="ViewBag.SupplierId"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white"></select>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="flex items-center justify-between mt-6">
+            <a asp-action="Index" class="text-gray-600 hover:text-gray-800 transition">
+                ← Volver
+            </a>
+
+            <button type="submit"
+                    class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+                Guardar cambios
+            </button>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/scripts/productjs/product-edit.js"></script>
+}

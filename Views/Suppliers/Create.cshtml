@@ -1,0 +1,122 @@
+﻿@model ProyectoWebCommercialLopez.Models.Supplier
+
+@{
+    ViewData["Title"] = "Create Supplier";
+}
+
+<h1 class="text-2xl font-bold mb-6">Create Supplier</h1>
+
+<div class="max-w-4xl bg-white p-6 shadow rounded-lg">
+    <form asp-action="Create" class="space-y-6">
+
+        <div asp-validation-summary="ModelOnly" class="text-red-600 mb-4"></div>
+
+        <!-- GRID 2 COLUMNAS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Razon Social -->
+            <div>
+                <label asp-for="RazonSocial" class="block font-medium mb-1"></label>
+                <input asp-for="RazonSocial" class="w-full border rounded p-2" />
+                <span asp-validation-for="RazonSocial" class="text-red-600 text-sm"></span>
+            </div>
+
+            <!-- NIT -->
+            <div>
+                <label asp-for="NIT" class="block font-medium mb-1"></label>
+                <input asp-for="NIT" class="w-full border rounded p-2" />
+                <span asp-validation-for="NIT" class="text-red-600 text-sm"></span>
+            </div>
+
+            <!-- Phone -->
+            <div>
+                <label asp-for="Phone" class="block font-medium mb-1"></label>
+                <input asp-for="Phone" class="w-full border rounded p-2" />
+                <span asp-validation-for="Phone" class="text-red-600 text-sm"></span>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label asp-for="Email" class="block font-medium mb-1"></label>
+                <input asp-for="Email" class="w-full border rounded p-2" />
+                <span asp-validation-for="Email" class="text-red-600 text-sm"></span>
+            </div>
+
+            <!-- Address -->
+            <div>
+                <label asp-for="Address" class="block font-medium mb-1"></label>
+                <input asp-for="Address" class="w-full border rounded p-2" />
+                <span asp-validation-for="Address" class="text-red-600 text-sm"></span>
+            </div>
+
+            <!-- Country -->
+            <div>
+                <label asp-for="Country" class="block font-medium mb-1"></label>
+                <select asp-for="Country" id="Country" class="w-full border rounded p-2 bg-white">
+                    <option value="">-- Select Country --</option>
+                    <option value="Bolivia">Bolivia</option>
+                    <option value="Chile">Chile</option>
+                    <option value="Brasil">Brasil</option>
+                    <option value="Perú">Perú</option>
+                </select>
+                <span asp-validation-for="Country" class="text-red-600 text-sm"></span>
+            </div>
+
+            <!-- City (SELECT) -->
+            <div>
+                <label asp-for="City" class="block font-medium mb-1"></label>
+                <select asp-for="City" id="City" class="w-full border rounded p-2 bg-white">
+                    <option value="">-- Select a city --</option>
+                </select>
+                <span asp-validation-for="City" class="text-red-600 text-sm"></span>
+            </div>
+
+        </div>
+
+        <!-- BOTÓN -->
+        <div>
+            <button type="submit"
+                    class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+                Create Supplier
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Back -->
+<div class="mt-4">
+    <a asp-action="Index" class="text-blue-600 hover:underline">← Back to List</a>
+</div>
+
+@section Scripts {
+
+@{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const countrySelect = document.getElementById("Country");
+            const citySelect = document.getElementById("City");
+
+            const citiesByCountry = {
+                "Bolivia": ["La Paz", "Cochabamba", "Santa Cruz", "Sucre", "Oruro", "Potosí", "Tarija", "Beni", "Pando"],
+                "Chile": ["Santiago", "Valparaíso", "Concepción", "La Serena", "Antofagasta", "Rancagua"],
+                "Brasil": ["São Paulo", "Rio de Janeiro", "Brasilia", "Salvador", "Fortaleza", "Curitiba"],
+                "Perú": ["Lima", "Arequipa", "Cusco", "Trujillo", "Piura", "Chiclayo"]
+            };
+
+            countrySelect.addEventListener("change", () => {
+                const selectedCountry = countrySelect.value;
+
+                citySelect.innerHTML = `<option value="">-- Select a city --</option>`;
+
+                if (citiesByCountry[selectedCountry]) {
+                    citiesByCountry[selectedCountry].forEach(city => {
+                        citySelect.innerHTML += `<option value="${city}">${city}</option>`;
+                    });
+                }
+            });
+        });
+    </script>
+}

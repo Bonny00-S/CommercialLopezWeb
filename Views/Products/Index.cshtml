@@ -1,0 +1,86 @@
+﻿@model IEnumerable<ProyectoWebCommercialLopez.Models.Product>
+
+@{
+    ViewData["Title"] = "Productos";
+}
+
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Productos</h1>
+
+    <a asp-action="Create"
+       class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+        Crear nuevo
+    </a>
+</div>
+
+<div class="overflow-x-auto shadow-lg rounded-xl border border-gray-200 bg-white">
+    <table class="min-w-full text-sm">
+        <thead class="bg-gray-100 border-b border-gray-200">
+            <tr>
+                <th class="px-6 py-3 text-left font-semibold text-gray-700 uppercase">Imagen</th>
+                <th class="px-6 py-3 text-left font-semibold text-gray-700 uppercase">Descripción</th>
+                <th class="px-6 py-3 text-left font-semibold text-gray-700 uppercase">Precio</th>
+                <th class="px-6 py-3 text-left font-semibold text-gray-700 uppercase">Stock</th>
+                <th class="px-6 py-3 text-right font-semibold text-gray-700 uppercase">Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200">
+            @foreach (var item in Model)
+            {
+                <tr class="hover:bg-gray-50 transition">
+
+                    <!-- Imagen -->
+                    <td class="px-6 py-4">
+                        @if (!string.IsNullOrEmpty(item.Image))
+                        {
+                            <img src="~/images/products/@item.Image"
+                                 class="h-14 w-14 rounded-lg object-cover border shadow-sm" />
+                        }
+                        else
+                        {
+                            <div class="h-14 w-14 flex items-center justify-center bg-gray-100 text-gray-400 rounded-lg border">
+                                No Img
+                            </div>
+                        }
+                    </td>
+
+                    <!-- Descripción -->
+                    <td class="px-6 py-4 text-gray-800">
+                        @item.Description
+                    </td>
+
+                    <!-- Precio -->
+                    <td class="px-6 py-4 text-gray-700 font-medium">
+                        $@item.Price.ToString("0.00")
+                    </td>
+
+                    <!-- Stock -->
+                    <td class="px-6 py-4 text-gray-700">
+                        @item.Stock
+                    </td>
+
+                    <!-- Acciones -->
+                    <td class="px-6 py-4 text-right space-x-2">
+
+                        <a asp-action="Details" asp-route-id="@item.Id"
+                           class="inline-block px-3 py-1 text-green-600 hover:text-green-800 font-medium">
+                            Detalles
+                        </a>
+
+                        <a asp-action="Edit" asp-route-id="@item.Id"
+                           class="inline-block px-3 py-1 text-blue-600 hover:text-blue-800 font-medium">
+                            Editar
+                        </a>
+
+                        <a asp-action="Delete" asp-route-id="@item.Id"
+                           class="inline-block px-3 py-1 text-red-600 hover:text-red-800 font-medium">
+                            Eliminar
+                        </a>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

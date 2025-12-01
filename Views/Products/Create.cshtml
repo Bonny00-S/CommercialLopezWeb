@@ -1,0 +1,93 @@
+﻿@model ProyectoWebCommercialLopez.Models.Product
+
+@{
+    ViewData["Title"] = "Crear Producto";
+}
+
+<h1 class="text-3xl font-bold text-gray-800 mb-6">Crear Producto</h1>
+
+<div class="max-w-2xl bg-white p-6 rounded-xl shadow border border-gray-200">
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="space-y-6">
+
+        <!-- DESCRIPCIÓN -->
+        <div>
+            <label asp-for="Description" class="block text-sm font-semibold text-gray-700 mb-1"></label>
+
+            <input asp-for="Description" id="Description"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+
+            <!-- ESPACIO PERSONALIZADO PARA ERROR -->
+            <div id="descriptionError" class="text-red-600 text-sm mt-1"></div>
+        </div>
+
+        <!-- PRECIO -->
+        <div>
+            <label asp-for="Price" class="block text-sm font-semibold text-gray-700 mb-1"></label>
+
+            <input asp-for="Price" id="Price"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+
+            <div id="priceError" class="text-red-600 text-sm mt-1"></div>
+        </div>
+
+        <!-- STOCK -->
+        <div>
+            <label asp-for="Stock" class="block text-sm font-semibold text-gray-700 mb-1"></label>
+
+            <input asp-for="Stock" id="Stock"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+
+            <div id="stockError" class="text-red-600 text-sm mt-1"></div>
+        </div>
+
+        <!-- IMAGEN -->
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Imagen</label>
+
+            <input type="file" name="ImageFile" id="imageFileInput"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+
+            <div class="mt-3">
+                <img id="imagePreview" class="h-32 w-32 object-cover border rounded hidden" />
+            </div>
+
+            <div id="imageError" class="text-red-600 text-sm mt-1"></div>
+        </div>
+
+        <!-- CATEGORÍA -->
+        <div>
+            <label asp-for="CategoryId"></label>
+            <select asp-for="CategoryId" id="CategoryId" asp-items="ViewBag.CategoryId"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg"></select>
+        </div>
+
+        <!-- WAREHOUSE -->
+        <div>
+            <label asp-for="WarehouseId"></label>
+            <select asp-for="WarehouseId" id="WarehouseId" asp-items="ViewBag.WarehouseId"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg"></select>
+        </div>
+
+        <!-- SUPPLIER -->
+        <div>
+            <label asp-for="SupplierId"></label>
+            <select asp-for="SupplierId" id="SupplierId" asp-items="ViewBag.SupplierId"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg"></select>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="flex justify-between mt-4">
+            <a asp-action="Index" class="text-gray-600 hover:text-gray-800">← Volver</a>
+
+            <button type="submit"
+                    class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Crear
+            </button>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/scripts/productjs/product-validations.js"></script>
+}
