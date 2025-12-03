@@ -44,6 +44,32 @@ namespace ProyectoWebCommercialLopez.Migrations
                     b.ToTable("Category");
                 });
 
+            modelBuilder.Entity("ProyectoWebCommercialLopez.Models.PasswocrdResetToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime>("Expiration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasswordResetToken");
+                });
+
             modelBuilder.Entity("ProyectoWebCommercialLopez.Models.Person", b =>
                 {
                     b.Property<int>("Id")

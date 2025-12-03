@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProyectoWebCommercialLopez.Migrations
 {
     /// <inheritdoc />
-    public partial class ProductCategory : Migration
+    public partial class first : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,6 +23,21 @@ namespace ProyectoWebCommercialLopez.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Category", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PasswordResetToken",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Expiration = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PasswordResetToken", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -170,11 +185,56 @@ namespace ProyectoWebCommercialLopez.Migrations
                 name: "IX_Product_WarehouseId",
                 table: "Product",
                 column: "WarehouseId");
+
+
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword("admin123");
+
+            // Insertar Persona Admin
+            migrationBuilder.Sql(@"
+                IF NOT EXISTS (SELECT 1 FROM Person WHERE Name = 'AdminPerson')
+                BEGIN
+                    INSERT INTO Person (CI, Name, LastName, DateBirth, Address, Phone, Email, CreatedAt, CreatedBy,State)
+                    VALUES (
+                        '00000000',
+                        'AdminPerson',
+                        'Admin',
+                        '1990-01-01',
+                        'Av. Admin',
+                        '12345678',
+                        'admin@gmail.com',
+                        GETDATE(),
+                        1,
+                        1
+                    )
+                END
+            ");
+
+            // Insertar Usuario Admin
+            migrationBuilder.Sql($@"
+                IF NOT EXISTS (SELECT 1 FROM [User] WHERE Username = 'admin')
+                BEGIN
+                    DECLARE @PersonId INT = (SELECT TOP 1 Id FROM Person WHERE Name = 'AdminPerson');
+
+                    INSERT INTO [User] (IdPerson, Username, Password, Role, StatePassword, CreatedAt, CreatedBy)
+                    VALUES (
+                        @PersonId,
+                        'admin',
+                        '{passwordHash}',
+                        1,
+                        0,
+                        GETDATE(),
+                        1
+                    )
+                END
+            ");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "PasswordResetToken");
+
             migrationBuilder.DropTable(
                 name: "Product");
 

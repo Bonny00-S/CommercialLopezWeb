@@ -12,8 +12,8 @@ using ProyectoWebCommercialLopez.Data;
 namespace ProyectoWebCommercialLopez.Migrations
 {
     [DbContext(typeof(appDbContextCommercial))]
-    [Migration("20251201005338_ProductCategory")]
-    partial class ProductCategory
+    [Migration("20251203130514_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,32 @@ namespace ProyectoWebCommercialLopez.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Category");
+                });
+
+            modelBuilder.Entity("ProyectoWebCommercialLopez.Models.PasswocrdResetToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime>("Expiration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasswordResetToken");
                 });
 
             modelBuilder.Entity("ProyectoWebCommercialLopez.Models.Person", b =>
