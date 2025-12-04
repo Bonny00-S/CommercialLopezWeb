@@ -59,8 +59,17 @@ namespace ProyectoWebCommercialLopez.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,CreatedAt,ModifiedAt,CreatedBy,ModifiedBy")] WareHouse wareHouse)
         {
+
+            if (await _context.WareHouse.AnyAsync(p => p.Name == wareHouse.Name))
+            {
+                ModelState.AddModelError("Name", " A warehouse with that name already exists and is registered.");
+                return View(wareHouse);
+            }
+
             if (ModelState.IsValid)
             {
+                wareHouse.CreatedAt = DateTime.Now;
+                wareHouse.CreatedBy = int.Parse(User.FindFirst("UserId").Value);
                 _context.Add(wareHouse);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -92,32 +101,53 @@ namespace ProyectoWebCommercialLopez.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CreatedAt,ModifiedAt,CreatedBy,ModifiedBy")] WareHouse wareHouse)
         {
             if (id != wareHouse.Id)
-            {
                 return NotFound();
+
+            // 🔍 Obtener el registro ORIGINAL desde la BD
+            var original = await _context.WareHouse.AsNoTracking()
+                                                   .FirstOrDefaultAsync(w => w.Id == id);
+
+            if (original == null)
+                return NotFound();
+
+            // ⭐ SI el nombre fue modificado recién validamos duplicados
+            if (original.Name != wareHouse.Name)
+            {
+                // 🔥 Validar que NO exista otro con el mismo nombre
+                bool nameExists = await _context.WareHouse
+                    .AnyAsync(w => w.Name == wareHouse.Name && w.Id != wareHouse.Id);
+
+                if (nameExists)
+                {
+                    ModelState.AddModelError("Name", "A warehouse with that name already exists and is registered.");
+                    return View(wareHouse);
+                }
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    wareHouse.ModifiedAt = DateTime.Now;
+                    wareHouse.ModifiedBy = int.Parse(User.FindFirst("UserId").Value);
+
                     _context.Update(wareHouse);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!WareHouseExists(wareHouse.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(wareHouse);
         }
+
 
         // GET: WareHouses/Delete/5
         public async Task<IActionResult> Delete(int? id)

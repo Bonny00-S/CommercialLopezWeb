@@ -19,6 +19,7 @@
                 <label asp-for="RazonSocial" class="block font-medium mb-1"></label>
                 <input asp-for="RazonSocial" class="w-full border rounded p-2" />
                 <span asp-validation-for="RazonSocial" class="text-red-600 text-sm"></span>
+                <span id="RazonSocialError" class="text-red-600 text-sm"></span>
             </div>
 
             <!-- NIT -->
@@ -26,6 +27,7 @@
                 <label asp-for="NIT" class="block font-medium mb-1"></label>
                 <input asp-for="NIT" class="w-full border rounded p-2" />
                 <span asp-validation-for="NIT" class="text-red-600 text-sm"></span>
+                <span id="NitError" class="text-red-600 text-sm"></span>
             </div>
 
             <!-- Phone -->
@@ -33,6 +35,7 @@
                 <label asp-for="Phone" class="block font-medium mb-1"></label>
                 <input asp-for="Phone" class="w-full border rounded p-2" />
                 <span asp-validation-for="Phone" class="text-red-600 text-sm"></span>
+                <span id="PhoneError" class="text-red-600 text-sm"></span>
             </div>
 
             <!-- Email -->
@@ -40,6 +43,7 @@
                 <label asp-for="Email" class="block font-medium mb-1"></label>
                 <input asp-for="Email" class="w-full border rounded p-2" />
                 <span asp-validation-for="Email" class="text-red-600 text-sm"></span>
+                <span id="EmailError" class="text-red-600 text-sm"></span>
             </div>
 
             <!-- Address -->
@@ -47,6 +51,7 @@
                 <label asp-for="Address" class="block font-medium mb-1"></label>
                 <input asp-for="Address" class="w-full border rounded p-2" />
                 <span asp-validation-for="Address" class="text-red-600 text-sm"></span>
+                <span id="AddressError" class="text-red-600 text-sm"></span>
             </div>
 
             <!-- Country -->
@@ -56,10 +61,10 @@
                     <option value="">-- Select Country --</option>
                     <option value="Bolivia">Bolivia</option>
                     <option value="Chile">Chile</option>
-                    <option value="Brasil">Brasil</option>
-                    <option value="Perú">Perú</option>
+                  
                 </select>
                 <span asp-validation-for="Country" class="text-red-600 text-sm"></span>
+                <span id="CountryError" class="text-red-600 text-sm"></span>
             </div>
 
             <!-- City (SELECT) -->
@@ -69,6 +74,7 @@
                     <option value="">-- Select a city --</option>
                 </select>
                 <span asp-validation-for="City" class="text-red-600 text-sm"></span>
+                <span id="CityError" class="text-red-600 text-sm"></span>
             </div>
 
         </div>
@@ -89,34 +95,10 @@
 </div>
 
 @section Scripts {
-
-@{
+    <script src="~/scripts/supplierjs/supplier-validation.js"></script>
+    @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
 
-            const countrySelect = document.getElementById("Country");
-            const citySelect = document.getElementById("City");
-
-            const citiesByCountry = {
-                "Bolivia": ["La Paz", "Cochabamba", "Santa Cruz", "Sucre", "Oruro", "Potosí", "Tarija", "Beni", "Pando"],
-                "Chile": ["Santiago", "Valparaíso", "Concepción", "La Serena", "Antofagasta", "Rancagua"],
-                "Brasil": ["São Paulo", "Rio de Janeiro", "Brasilia", "Salvador", "Fortaleza", "Curitiba"],
-                "Perú": ["Lima", "Arequipa", "Cusco", "Trujillo", "Piura", "Chiclayo"]
-            };
-
-            countrySelect.addEventListener("change", () => {
-                const selectedCountry = countrySelect.value;
-
-                citySelect.innerHTML = `<option value="">-- Select a city --</option>`;
-
-                if (citiesByCountry[selectedCountry]) {
-                    citiesByCountry[selectedCountry].forEach(city => {
-                        citySelect.innerHTML += `<option value="${city}">${city}</option>`;
-                    });
-                }
-            });
-        });
-    </script>
+    
 }

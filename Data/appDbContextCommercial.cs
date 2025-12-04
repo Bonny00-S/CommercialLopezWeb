@@ -18,6 +18,7 @@ namespace ProyectoWebCommercialLopez.Data
         public DbSet<Supplier > Supplier { get; set; }
 
         public DbSet<WareHouse> WareHouse { get; set; }
+
         public DbSet<PasswocrdResetToken> PasswordResetToken { get; set; }
 
     }

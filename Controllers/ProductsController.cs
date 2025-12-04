@@ -77,6 +77,13 @@ namespace ProyectoWebCommercialLopez.Controllers
                 return View(product);
             }
 
+            if (await _context.Product.AnyAsync(p => p.Description == product.Description))
+            {
+                ModelState.AddModelError("Description", " ya existe un producto con ese nombre está registrado.");
+                return View(product);
+            }
+
+
             // 📌 1. Subir imagen si existe
             if (ImageFile != null && ImageFile.Length > 0)
             {

@@ -4,86 +4,105 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1 class="text-2xl font-bold mb-6">Edit Supplier</h1>
 
-<h4>Supplier</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="RazonSocial" class="control-label"></label>
-                <input asp-for="RazonSocial" class="form-control" />
-                <span asp-validation-for="RazonSocial" class="text-danger"></span>
+<div class="max-w-4xl bg-white p-6 shadow rounded-lg">
+    <form asp-action="Edit" method="post" class="space-y-6">
+
+        <div asp-validation-summary="ModelOnly" class="text-red-600 mb-4"></div>
+
+        <!-- Valores Internos -->
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CreatedAt" />
+        <input type="hidden" asp-for="CreatedBy" />
+        <input type="hidden" asp-for="ModifiedAt" />
+        <input type="hidden" asp-for="ModifiedBy" />
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Razon Social -->
+            <div>
+                <label asp-for="RazonSocial" class="block font-medium mb-1"></label>
+                <input asp-for="RazonSocial" id="RazonSocial" class="w-full border rounded p-2" />
+                <span asp-validation-for="RazonSocial" class="text-red-600 text-sm"></span>
+                <span id="RazonSocialError" class="text-red-600 text-sm"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="NIT" class="control-label"></label>
-                <input asp-for="NIT" class="form-control" />
-                <span asp-validation-for="NIT" class="text-danger"></span>
+
+            <!-- NIT -->
+            <div>
+                <label asp-for="NIT" class="block font-medium mb-1"></label>
+                <input asp-for="NIT" id="NIT" class="w-full border rounded p-2" />
+                <span asp-validation-for="NIT" class="text-red-600 text-sm"></span>
+                <span id="NitError" class="text-red-600 text-sm"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
+
+            <!-- Phone -->
+            <div>
+                <label asp-for="Phone" class="block font-medium mb-1"></label>
+                <input asp-for="Phone" id="Phone" class="w-full border rounded p-2" />
+                <span asp-validation-for="Phone" class="text-red-600 text-sm"></span>
+                <span id="PhoneError" class="text-red-600 text-sm"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+
+            <!-- Email -->
+            <div>
+                <label asp-for="Email" class="block font-medium mb-1"></label>
+                <input asp-for="Email" id="Email" class="w-full border rounded p-2" />
+                <span asp-validation-for="Email" class="text-red-600 text-sm"></span>
+                <span id="EmailError" class="text-red-600 text-sm"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
+
+            <!-- Address -->
+            <div>
+                <label asp-for="Address" class="block font-medium mb-1"></label>
+                <input asp-for="Address" id="Address" class="w-full border rounded p-2" />
+                <span asp-validation-for="Address" class="text-red-600 text-sm"></span>
+                <span id="AddressError" class="text-red-600 text-sm"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
+
+            <!-- Country -->
+            <div>
+                <label asp-for="Country" class="block font-medium mb-1"></label>
+                <select asp-for="Country" id="Country" class="w-full border rounded p-2 bg-white">
+                    <option value="">-- Select Country --</option>
+                    <option value="Bolivia">Bolivia</option>
+                    <option value="Chile">Chile</option>
+                </select>
+                <span asp-validation-for="Country" class="text-red-600 text-sm"></span>
+                <span id="CountryError" class="text-red-600 text-sm"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Country" class="control-label"></label>
-                <input asp-for="Country" class="form-control" />
-                <span asp-validation-for="Country" class="text-danger"></span>
+
+            <!-- City -->
+            <div>
+                <label asp-for="City" class="block font-medium mb-1"></label>
+                <select asp-for="City"
+                        id="City"
+                        data-selected="@Model.City"
+                        class="w-full border rounded p-2 bg-white">
+                    <option value="">-- Select a city --</option>
+                </select>
+
+                <span asp-validation-for="City" class="text-red-600 text-sm"></span>
+                <span id="CityError" class="text-red-600 text-sm"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="State" class="control-label"></label>
-                <input asp-for="State" class="form-control" />
-                <span asp-validation-for="State" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ModifiedAt" class="control-label"></label>
-                <input asp-for="ModifiedAt" class="form-control" />
-                <span asp-validation-for="ModifiedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedBy" class="control-label"></label>
-                <input asp-for="CreatedBy" class="form-control" />
-                <span asp-validation-for="CreatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ModifiedBy" class="control-label"></label>
-                <input asp-for="ModifiedBy" class="form-control" />
-                <span asp-validation-for="ModifiedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+        </div>
+
+        <div>
+            <button type="submit"
+                    class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+                Save Changes
+            </button>
+        </div>
+
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="mt-4">
+    <a asp-action="Index" class="text-blue-600 hover:underline">← Back to List</a>
 </div>
+
 
 @section Scripts {
+    <script src="~/scripts/supplierjs/supplier-validation.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
