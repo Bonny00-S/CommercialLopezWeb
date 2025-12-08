@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoWebCommercialLopez.Data;
 
@@ -11,9 +12,11 @@ using ProyectoWebCommercialLopez.Data;
 namespace ProyectoWebCommercialLopez.Migrations
 {
     [DbContext(typeof(appDbContextCommercial))]
-    partial class appDbContextCommercialModelSnapshot : ModelSnapshot
+    [Migration("20251208135554_AddSalesModule")]
+    partial class AddSalesModule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

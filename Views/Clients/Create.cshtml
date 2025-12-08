@@ -1,0 +1,65 @@
+﻿@model ProyectoWebCommercialLopez.Models.Client
+
+@{
+    ViewData["Title"] = "Registrar Cliente";
+}
+
+<h1 class="text-2xl font-bold mb-4">Registrar Nuevo Cliente</h1>
+
+<div class="max-w-4xl">
+    <form asp-action="Create" method="post" class="space-y-6">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger bg-red-50 p-3 rounded mb-4"></div>
+
+        <!-- GRID DE 2 COLUMNAS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- CI/NIT -->
+            <div>
+                <label asp-for="DocumentNumber" class="block font-medium mb-1"></label>
+                <input asp-for="DocumentNumber" class="w-full border rounded p-2" placeholder="Ej: 12345678" />
+                <span asp-validation-for="DocumentNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Razón Social -->
+            <div>
+                <label asp-for="CompanyName" class="block font-medium mb-1"></label>
+                <input asp-for="CompanyName" class="w-full border rounded p-2" placeholder="Ej: Comercial Lopez S.R.L." />
+                <span asp-validation-for="CompanyName" class="text-danger"></span>
+            </div>
+
+            <!-- Teléfono -->
+            <div>
+                <label asp-for="Phone" class="block font-medium mb-1"></label>
+                <input asp-for="Phone" class="w-full border rounded p-2" placeholder="Ej: 70123456" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+         
+
+            <!-- Dirección (Ocupar toda la fila) -->
+            <div class="md:col-span-2">
+                <label asp-for="Address" class="block font-medium mb-1"></label>
+                <input asp-for="Address" class="w-full border rounded p-2" placeholder="Ej: Av. Principal #123, Zona Centro" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+        </div>
+
+        <!-- BOTONES -->
+        <div class="flex gap-3">
+            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+                Guardar Cliente
+            </button>
+            <a asp-action="Index" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 inline-block">
+                Cancelar
+            </a>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

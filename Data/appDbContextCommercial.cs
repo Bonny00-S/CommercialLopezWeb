@@ -21,5 +21,11 @@ namespace ProyectoWebCommercialLopez.Data
 
         public DbSet<PasswocrdResetToken> PasswordResetToken { get; set; }
 
+        public DbSet<Client> Client { get; set; }
+
+        public DbSet<Sale> Sale { get; set; }
+
+        public DbSet<SaleDetail> SaleDetail { get; set; }
+
     }
 }

@@ -1,0 +1,74 @@
+﻿@model ProyectoWebCommercialLopez.Models.Client
+
+@{
+    ViewData["Title"] = "Detalles del Cliente";
+}
+
+<h1 class="text-2xl font-bold mb-4">Detalles del Cliente</h1>
+
+<div class="bg-white shadow rounded-lg p-6 max-w-3xl">
+    
+    <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class="border-b pb-3">
+            <dt class="text-sm font-semibold text-gray-600">@Html.DisplayNameFor(model => model.DocumentNumber)</dt>
+            <dd class="mt-1 text-lg text-gray-900">@Html.DisplayFor(model => model.DocumentNumber)</dd>
+        </div>
+
+        <div class="border-b pb-3">
+            <dt class="text-sm font-semibold text-gray-600">@Html.DisplayNameFor(model => model.CompanyName)</dt>
+            <dd class="mt-1 text-lg text-gray-900">@Html.DisplayFor(model => model.CompanyName)</dd>
+        </div>
+
+        <div class="border-b pb-3">
+            <dt class="text-sm font-semibold text-gray-600">@Html.DisplayNameFor(model => model.Phone)</dt>
+            <dd class="mt-1 text-lg text-gray-900">@(Model?.Phone ?? "No proporcionado")</dd>
+        </div>
+
+     
+
+        <div class="border-b pb-3 md:col-span-2">
+            <dt class="text-sm font-semibold text-gray-600">@Html.DisplayNameFor(model => model.Address)</dt>
+            <dd class="mt-1 text-lg text-gray-900">@(Model?.Address ?? "No proporcionada")</dd>
+        </div>
+
+        <div class="border-b pb-3">
+            <dt class="text-sm font-semibold text-gray-600">@Html.DisplayNameFor(model => model.State)</dt>
+            <dd class="mt-1 text-lg">
+                @if (Model?.State == 1)
+                {
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">Activo</span>
+                }
+                else
+                {
+                    <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">Inactivo</span>
+                }
+            </dd>
+        </div>
+
+        <div class="border-b pb-3">
+            <dt class="text-sm font-semibold text-gray-600">@Html.DisplayNameFor(model => model.CreatedAt)</dt>
+            <dd class="mt-1 text-gray-700">@Model?.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+        </div>
+
+        @if (Model?.ModifiedAt != null)
+        {
+            <div class="border-b pb-3">
+                <dt class="text-sm font-semibold text-gray-600">@Html.DisplayNameFor(model => model.ModifiedAt)</dt>
+                <dd class="mt-1 text-gray-700">@Model?.ModifiedAt?.ToString("dd/MM/yyyy HH:mm")</dd>
+            </div>
+        }
+
+    </dl>
+
+</div>
+
+<div class="mt-6 flex gap-3">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="bg-orange-600 text-white px-6 py-2 rounded hover:bg-orange-700">
+        Editar
+    </a>
+    <a asp-action="Index" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">
+        Volver a la Lista
+    </a>
+</div>
+
