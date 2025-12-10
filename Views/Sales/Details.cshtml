@@ -1,78 +1,78 @@
 @model ProyectoWebCommercialLopez.Models.Sale
 
 @{
-    ViewData["Title"] = "Detalle de Venta";
+    ViewData["Title"] = "Sale Details";
 }
 
 <div class="container mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Detalle de Venta</h1>
+        <h1 class="text-3xl font-bold text-gray-800">Sale Details</h1>
         <div class="space-x-2">
             <a asp-action="PrintReceipt" asp-route-id="@Model.Id" target="_blank" 
                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                🖨️ Imprimir Comprobante
+                🖨️ Print Receipt
             </a>
             <a asp-action="Index" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
-                ← Volver al Listado
+                ← Back to List
             </a>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- INFORMACIÓN GENERAL -->
+        <!-- GENERAL INFORMATION -->
         <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow">
-            <h2 class="text-xl font-semibold mb-4 border-b pb-2">Información General</h2>
+            <h2 class="text-xl font-semibold mb-4 border-b pb-2">General Information</h2>
             
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <p class="text-sm text-gray-600">Número de Venta</p>
+                    <p class="text-sm text-gray-600">Sale Number</p>
                     <p class="font-semibold text-blue-600">#@Model.Id</p>
                 </div>
 
                 <div>
-                    <p class="text-sm text-gray-600">Fecha de Venta</p>
+                    <p class="text-sm text-gray-600">Sale Date</p>
                     <p class="font-semibold">@Model.SaleDate.ToString("dd/MM/yyyy HH:mm")</p>
                 </div>
 
                 <div>
-                    <p class="text-sm text-gray-600">Cliente</p>
+                    <p class="text-sm text-gray-600">Customer</p>
                     <p class="font-semibold">@Model.Client?.CompanyName</p>
                     <p class="text-xs text-gray-500">@Model.Client?.DocumentNumber</p>
                 </div>
 
                 <div>
-                    <p class="text-sm text-gray-600">Método de Pago</p>
+                    <p class="text-sm text-gray-600">Payment Method</p>
                     <p class="font-semibold">@Model.PaymentType</p>
                 </div>
 
                 <div>
-                    <p class="text-sm text-gray-600">Estado</p>
+                    <p class="text-sm text-gray-600">Status</p>
                     @if (Model.Status == "Anulado")
                     {
                         <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
-                            ❌ Anulado
+                            ❌ Canceled
                         </span>
                     }
                     else
                     {
                         <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                            ✓ Completado
+                            ✓ Completed
                         </span>
                     }
                 </div>
             </div>
         </div>
 
-        <!-- RESUMEN -->
+        <!-- SUMMARY -->
         <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow">
-            <h2 class="text-xl font-semibold mb-4">Resumen</h2>
+            <h2 class="text-xl font-semibold mb-4">Summary</h2>
             
             <div class="space-y-3">
                 @if (Model.Discount > 0)
                 {
                     <div class="flex justify-between">
-                        <span class="text-gray-700">Descuento:</span>
+                        <span class="text-gray-700">Discount:</span>
                         <span class="font-semibold text-red-600">Bs. @Model.Discount.ToString("N2")</span>
                     </div>
                 }
@@ -85,18 +85,18 @@
         </div>
     </div>
 
-    <!-- PRODUCTOS -->
+    <!-- PRODUCTS -->
     <div class="mt-6 bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4 border-b pb-2">Productos Vendidos</h2>
+        <h2 class="text-xl font-semibold mb-4 border-b pb-2">Products Sold</h2>
         
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">#</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Producto</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Cantidad</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Precio Unit.</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Quantity</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Unit Price</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Subtotal</th>
                     </tr>
                 </thead>
@@ -126,14 +126,14 @@
         </div>
     </div>
 
-    <!-- ACCIONES -->
+    <!-- ACTIONS -->
     <div class="mt-6 flex justify-between">
-        <a asp-action="Index" class="text-gray-600 hover:text-gray-800">← Volver</a>
+        <a asp-action="Index" class="text-gray-600 hover:text-gray-800">← Back</a>
         
         @if (Model.Status == "Completada")
         {
             <a asp-action="Delete" asp-route-id="@Model.Id" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                Anular Venta
+                Cancel Sale
             </a>
         }
     </div>
