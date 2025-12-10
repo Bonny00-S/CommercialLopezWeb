@@ -68,28 +68,21 @@ document.addEventListener("DOMContentLoaded", function () {
     // ================================
     function validateCompanyName() {
         let text = companyName.value.trim();
-        companyName.value = text;
 
         if (text.length === 0) {
             companyNameError.textContent = "The Reason Social is mandatory.";
             return false;
         }
 
-        if (text.length < 2 || text.length > 100) {
-            companyNameError.textContent = "The full name must be between 2 and 100 characters.";
+        if (text.length < 3 || text.length > 150) {
+            companyNameError.textContent = "Must be between 3 and 150 characters.";
             return false;
         }
 
-        // Verificar que no tenga dobles espacios
-        if (text.includes("  ")) {
-            companyNameError.textContent = "Multiple spaces in a row are not allowed.";
-            return false;
-        }
-
-        // Solo letras, espacios y acentos
+        // Solo permitir letras, espacios y acentos (NO números ni caracteres especiales)
         const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/;
         if (!regex.test(text)) {
-            companyNameError.textContent = "The name can only contain letters and spaces.";
+            companyNameError.textContent = "Only letters and spaces are allowed. No numbers or special characters.";
             return false;
         }
 
@@ -166,9 +159,25 @@ document.addEventListener("DOMContentLoaded", function () {
     // EVENTOS EN TIEMPO REAL (input)
     // ================================
     documentNumber.addEventListener("input", validateDocumentNumber);
-    companyName.addEventListener("input", validateCompanyName);
+    // No validar companyName en tiempo real para permitir escribir espacios libremente
     phone.addEventListener("input", validatePhone);
     address.addEventListener("input", validateAddress);
+
+    // Prevenir espacios al inicio y múltiples espacios al final en CompanyName
+    companyName.addEventListener("input", function() {
+        // Prevenir espacio al inicio
+        if (companyName.value.startsWith(" ")) {
+            companyName.value = companyName.value.trimStart();
+        }
+        
+        // Prevenir más de un espacio al final
+        if (companyName.value.endsWith("  ")) {
+            companyName.value = companyName.value.replace(/\s{2,}$/, " ");
+        }
+        
+        // Prevenir múltiples espacios consecutivos en medio
+        companyName.value = companyName.value.replace(/\s{2,}/g, " ");
+    });
 
     // ================================
     // EVENTOS al SALIR DEL CAMPO (blur)

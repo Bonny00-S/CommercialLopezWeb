@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoWebCommercialLopez.Data;
 using ProyectoWebCommercialLopez.Models;
+using ProyectoWebCommercialLopez.Models.ViewModels;
 
 namespace ProyectoWebCommercialLopez.Controllers
 {
@@ -114,7 +115,7 @@ namespace ProyectoWebCommercialLopez.Controllers
 
         // POST: Sales/Create
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] SaleCreateModel model)
+        public async Task<IActionResult> Create([FromBody] SaleCreateVM model)
         {
             try
             {
@@ -274,23 +275,5 @@ namespace ProyectoWebCommercialLopez.Controllers
         {
             return _context.Sale.Any(e => e.Id == id);
         }
-    }
-
-    // Modelo para recibir datos de venta
-    public class SaleCreateModel
-    {
-        public int ClientId { get; set; }
-        public decimal Discount { get; set; }
-        public decimal Total { get; set; }
-        public string? PaymentType { get; set; }
-        public List<SaleDetailModel>? Details { get; set; }
-    }
-
-    public class SaleDetailModel
-    {
-        public int ProductId { get; set; }
-        public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
-        public decimal Subtotal { get; set; }
     }
 }
