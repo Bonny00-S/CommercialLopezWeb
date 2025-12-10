@@ -1,0 +1,274 @@
+@model ProyectoWebCommercialLopez.Models.Sale
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comprobante de Venta - #@Model.Id</title>
+    <style>
+        @@media print {
+            .no-print {
+                display: none;
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            font-size: 12px;
+        }
+
+        .receipt-container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #000;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .receipt-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .receipt-number {
+            font-size: 16px;
+            color: #0066cc;
+            margin-top: 5px;
+        }
+
+        .info-section {
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .label {
+            font-weight: bold;
+            min-width: 150px;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .products-table th,
+        .products-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .products-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        .products-table td.right {
+            text-align: right;
+        }
+
+        .products-table td.center {
+            text-align: center;
+        }
+
+        .totals {
+            float: right;
+            width: 300px;
+            margin-top: 10px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+
+        .total-row.grand-total {
+            font-size: 16px;
+            font-weight: bold;
+            border-top: 2px solid #000;
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            border-top: 1px solid #000;
+            padding-top: 20px;
+            text-align: center;
+            clear: both;
+        }
+
+        .print-button {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .print-button button {
+            background-color: #0066cc;
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .print-button button:hover {
+            background-color: #0052a3;
+        }
+
+        .back-button {
+            background-color: #6c757d;
+            margin-left: 10px;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="print-button no-print">
+        <button onclick="window.print()">🖨️ Imprimir Comprobante</button>
+        <button class="back-button" onclick="window.location.href='@Url.Action("Index")'">← Volver</button>
+    </div>
+
+    <div class="receipt-container">
+        <div class="header">
+            <div class="company-name">COMMERCIAL LOPEZ</div>
+            <div>Sistema de Gestión Comercial</div>
+            <div class="receipt-title">COMPROBANTE DE VENTA</div>
+            <div class="receipt-number">VENTA #@Model.Id</div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-row">
+                <span class="label">Fecha y Hora:</span>
+                <span>@Model.SaleDate.ToString("dd/MM/yyyy HH:mm:ss")</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Cliente:</span>
+                <span>@(Model.Client?.CompanyName ?? "Cliente General")</span>
+            </div>
+            @if (Model.Client != null)
+            {
+                <div class="info-row">
+                    <span class="label">CI/NIT:</span>
+                    <span>@Model.Client.DocumentNumber</span>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Client.Phone))
+                {
+                    <div class="info-row">
+                        <span class="label">Teléfono:</span>
+                        <span>@Model.Client.Phone</span>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Client.Address))
+                {
+                    <div class="info-row">
+                        <span class="label">Dirección:</span>
+                        <span>@Model.Client.Address</span>
+                    </div>
+                }
+            }
+            <div class="info-row">
+                <span class="label">Método de Pago:</span>
+                <span>@Model.PaymentType</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Estado:</span>
+                <span>@Model.Status</span>
+            </div>
+        </div>
+
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th>Producto</th>
+                    <th class="center" style="width: 100px;">Cantidad</th>
+                    <th class="right" style="width: 120px;">Precio Unit.</th>
+                    <th class="right" style="width: 120px;">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.SaleDetails != null)
+                {
+                    int index = 1;
+                    foreach (var detail in Model.SaleDetails)
+                    {
+                        <tr>
+                            <td class="center">@index</td>
+                            <td>@detail.Product?.Description</td>
+                            <td class="center">@detail.Quantity</td>
+                            <td class="right">Bs. @detail.UnitPrice.ToString("N2")</td>
+                            <td class="right">Bs. @detail.Subtotal.ToString("N2")</td>
+                        </tr>
+                        index++;
+                    }
+                }
+            </tbody>
+        </table>
+
+        <div class="totals">
+            @{
+                var subtotal = Model.SaleDetails?.Sum(d => d.Subtotal) ?? 0;
+            }
+            <div class="total-row">
+                <span>Subtotal:</span>
+                <span>Bs. @subtotal.ToString("N2")</span>
+            </div>
+            @if (Model.Discount > 0)
+            {
+                <div class="total-row">
+                    <span>Descuento:</span>
+                    <span>- Bs. @Model.Discount.ToString("N2")</span>
+                </div>
+            }
+            <div class="total-row grand-total">
+                <span>TOTAL:</span>
+                <span>Bs. @Model.Total.ToString("N2")</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>¡Gracias por su compra!</p>
+            <p style="margin-top: 10px; font-size: 10px;">
+                Este documento es un comprobante de venta válido.<br/>
+                Para cualquier consulta, presente este comprobante.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-imprimir al cargar (opcional)
+        // window.onload = function() { window.print(); }
+    </script>
+</body>
+</html>

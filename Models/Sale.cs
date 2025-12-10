@@ -9,20 +9,17 @@ namespace ProyectoWebCommercialLopez.Models
         [Key]
         public int Id { get; set; }
 
-
-
         [Required]
-        [Display(Name = "Sale Date")]
+        [Display(Name = "Fecha de Venta")]
         [DataType(DataType.DateTime)]
         public DateTime SaleDate { get; set; }
 
         [Required]
-        [Display(Name = "Client")]
+        [Display(Name = "Cliente")]
         [ForeignKey("Client")]
         public int ClientId { get; set; }
 
-
-        [Display(Name = "Discount")]
+        [Display(Name = "Descuento")]
         [Precision(18, 2)]
         public decimal Discount { get; set; }
 
@@ -30,14 +27,14 @@ namespace ProyectoWebCommercialLopez.Models
         [Precision(18, 2)]
         public decimal Total { get; set; }
 
-        [Display(Name = "Payment Type")]
+        [Required]
+        [Display(Name = "Tipo de Pago")]
         [StringLength(50)]
-        public string? PaymentType { get; set; } // Efectivo, Tarjeta, QR, etc.
+        public string? PaymentType { get; set; }
 
-        [Display(Name = "Status")]
+        [Display(Name = "Estado")]
         [StringLength(50)]
-        public string? Status { get; set; } // Completada, Cancelada, Pendiente
-
+        public string? Status { get; set; }
 
         [DataType(DataType.DateTime)]
         public DateTime CreatedAt { get; set; }
@@ -50,6 +47,10 @@ namespace ProyectoWebCommercialLopez.Models
 
         // Navegación
         public Client? Client { get; set; }
-        public ICollection<SaleDetail>? SaleDetails { get; set; }
+        
+        [ForeignKey("CreatedBy")]
+        public User? CreatedByUser { get; set; }
+        
+        public ICollection<SaleDetail> SaleDetails { get; set; } = new List<SaleDetail>();
     }
 }
