@@ -58,15 +58,28 @@ namespace ProyectoWebCommercialLopez.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description")] Category category)
         {
+            // Normalizar nombre (opcional pero recomendado)
+            category.Name = category.Name.Trim().ToUpper();
+
+            // ❌ Validación: nombre duplicado
+            bool exists = await _context.Category
+                .AnyAsync(c => c.Name.ToUpper() == category.Name);
+
+            if (exists)
+            {
+                ModelState.AddModelError("Name", "A category with this name already exists.");
+                return View(category);
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(category);
         }
-
         // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -91,8 +104,18 @@ namespace ProyectoWebCommercialLopez.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Category category)
         {
             if (id != category.Id)
-            {
                 return NotFound();
+
+            category.Name = category.Name.Trim().ToUpper();
+
+            // ❌ Validación: nombre duplicado excepto el mismo registro
+            bool exists = await _context.Category
+                .AnyAsync(c => c.Name.ToUpper() == category.Name && c.Id != id);
+
+            if (exists)
+            {
+                ModelState.AddModelError("Name", "Another category with this name already exists.");
+                return View(category);
             }
 
             if (ModelState.IsValid)
@@ -105,16 +128,13 @@ namespace ProyectoWebCommercialLopez.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!CategoryExists(category.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(category);
         }
 

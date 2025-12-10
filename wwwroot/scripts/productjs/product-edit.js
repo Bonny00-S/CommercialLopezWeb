@@ -1,6 +1,6 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
 
-    console.log("VALIDACIONES EDIT ACTIVAS");
+    console.log("EDIT VALIDATIONS ACTIVE");
 
     const description = document.getElementById("Description");
     const descriptionError = document.getElementById("descriptionError");
@@ -16,12 +16,15 @@
 
     const form = document.querySelector("form");
 
+    // ================================
+    // VALIDATION: DESCRIPTION
+    // ================================
     function validateDescription() {
         let text = description.value.toUpperCase().replace(/\s+/g, " ").trimStart();
         description.value = text;
 
         if (text.length === 0) {
-            descriptionError.textContent = "La descripción es obligatoria.";
+            descriptionError.textContent = "Description is required.";
             return false;
         }
         if (text.length < 4) {
@@ -29,7 +32,7 @@
             return false;
         }
         if (text.length > 50) {
-            descriptionError.textContent = "Máximo 50 caracteres permitidos.";
+            descriptionError.textContent = "Maximum allowed is 50 characters.";
             return false;
         }
 
@@ -37,14 +40,22 @@
         return true;
     }
 
+    // ================================
+    // VALIDATION: PRICE
+    // ================================
     function validatePrice() {
         let value = price.value.replace(/[^0-9.,]/g, "").replace(",", ".");
-
         const parts = value.split(".");
-        if (parts.length > 2) value = parts[0] + "." + parts[1];
-        if (value.startsWith(".")) value = "";
 
-        if (parts.length === 2) parts[1] = parts[1].slice(0, 2);
+        if (parts.length > 2)
+            value = parts[0] + "." + parts[1];
+
+        if (value.startsWith("."))
+            value = "";
+
+        if (parts.length === 2)
+            parts[1] = parts[1].slice(0, 2);
+
         price.value = parts.join(".");
 
         if (value === "") {
@@ -52,7 +63,7 @@
             return false;
         }
         if (isNaN(Number(value))) {
-            priceError.textContent = "Ingrese un número válido.";
+            priceError.textContent = "Enter a valid number.";
             return false;
         }
         if (Number(value) <= 0) {
@@ -64,6 +75,9 @@
         return true;
     }
 
+    // ================================
+    // VALIDATION: STOCK
+    // ================================
     function validateStock() {
         let value = stock.value.replace(/[^0-9]/g, "");
         stock.value = value;
@@ -73,7 +87,7 @@
             return false;
         }
         if (Number(value) < 0) {
-            stockError.textContent = "No puede ser negativo.";
+            stockError.textContent = "Cannot be negative.";
             return false;
         }
 
@@ -81,6 +95,9 @@
         return true;
     }
 
+    // ================================
+    // REAL-TIME EVENTS
+    // ================================
     description.addEventListener("input", validateDescription);
     price.addEventListener("input", validatePrice);
     stock.addEventListener("input", validateStock);
@@ -89,15 +106,18 @@
     price.addEventListener("blur", validatePrice);
     stock.addEventListener("blur", validateStock);
 
+    // ================================
+    // SUBMIT VALIDATION
+    // ================================
     form.addEventListener("submit", (e) => {
         if (!validateDescription() || !validatePrice() || !validateStock()) {
             e.preventDefault();
         }
     });
 
-    //-------------------------
-    // PREVIEW NUEVA IMAGEN
-    //-------------------------
+    // ================================
+    // IMAGE PREVIEW ON CHANGE
+    // ================================
     fileInput.addEventListener("change", function () {
         const file = this.files[0];
         if (!file) return;

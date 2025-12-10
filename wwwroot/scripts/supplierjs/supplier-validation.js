@@ -21,17 +21,37 @@
     };
 
     // =======================================
-    // 🔠 MAYÚSCULAS Y SIN DOBLES ESPACIOS
+    // 🔤 MAYÚSCULAS Y SIN DOBLES ESPACIOS
     // =======================================
     ["RazonSocial", "Address"].forEach(key => {
         fields[key].addEventListener("input", () => {
             fields[key].value = fields[key].value.replace(/\s{2,}/g, " ");
             fields[key].value = fields[key].value.toUpperCase();
+            validateRequired(key);
         });
+        fields[key].addEventListener("blur", () => validateRequired(key));
     });
 
     // =======================================
-    // 📱 TELÉFONO POR PAÍS (SOLO BOLIVIA Y CHILE)
+    // 📌 VALIDACIÓN CAMPOS REQUERIDOS
+    // =======================================
+    function validateRequired(key) {
+        if (!fields[key].value || fields[key].value.trim() === "") {
+            errors[key].textContent = `${key} is required`;
+            return false;
+        }
+        errors[key].textContent = "";
+        return true;
+    }
+
+    // Aplicar validación en tiempo real
+    Object.keys(fields).forEach(key => {
+        fields[key].addEventListener("input", () => validateRequired(key));
+        fields[key].addEventListener("blur", () => validateRequired(key));
+    });
+
+    // =======================================
+    // 📱 VALIDACIÓN TELÉFONO SEGÚN PAÍS
     // =======================================
     const phoneRules = {
         "Bolivia": 8,
@@ -46,16 +66,20 @@
         if (fields.Phone.value.length > maxLen)
             fields.Phone.value = fields.Phone.value.slice(0, maxLen);
 
-        errors.Phone.textContent =
-            fields.Phone.value.length < maxLen
-                ? `Phone must have ${maxLen} digits`
-                : "";
+        if (fields.Phone.value.length < maxLen) {
+            errors.Phone.textContent = `Phone must have ${maxLen} digits`;
+            return false;
+        }
+
+        errors.Phone.textContent = "";
+        return true;
     }
 
     fields.Phone.addEventListener("input", validatePhone);
+    fields.Phone.addEventListener("blur", validatePhone);
 
     // =======================================
-    // 🧾 NIT POR PAÍS (SOLO BOLIVIA Y CHILE)
+    // 🧾 VALIDACIÓN NIT SEGÚN PAÍS
     // =======================================
     const nitRules = {
         "Bolivia": 11,
@@ -70,16 +94,20 @@
         if (fields.NIT.value.length > maxLen)
             fields.NIT.value = fields.NIT.value.slice(0, maxLen);
 
-        errors.NIT.textContent =
-            fields.NIT.value.length < maxLen
-                ? `NIT for ${country} must have ${maxLen} digits`
-                : "";
+        if (fields.NIT.value.length < maxLen) {
+            errors.NIT.textContent = `NIT for ${country} must have ${maxLen} digits`;
+            return false;
+        }
+
+        errors.NIT.textContent = "";
+        return true;
     }
 
     fields.NIT.addEventListener("input", validateNIT);
+    fields.NIT.addEventListener("blur", validateNIT);
 
     // =======================================
-    // 📝 PLACEHOLDERS POR PAÍS
+    // 📝 PLACEHOLDERS DINÁMICOS POR PAÍS
     // =======================================
     const phonePlaceholders = {
         "Bolivia": "Ej: 71234567",
@@ -98,16 +126,8 @@
         fields.NIT.placeholder = nitPlaceholders[country] || "NIT";
     }
 
-    fields.Country.addEventListener("change", () => {
-        updatePlaceholders();
-        validatePhone();
-        validateNIT();
-        loadCities();
-        selectCityOnEdit();
-    });
-
     // =======================================
-    // 🏙️ CIUDADES SOLO BOLIVIA Y CHILE
+    // 🏙️ CARGAR CIUDADES POR PAÍS
     // =======================================
     const citiesByCountry = {
         "Bolivia": ["LA PAZ", "COCHABAMBA", "SANTA CRUZ", "SUCRE", "ORURO", "POTOSI", "TARIJA", "BENI", "PANDO"],
@@ -125,25 +145,24 @@
         }
     }
 
-    function selectCityOnEdit() {
-        const selectedCity = fields.City.getAttribute("data-selected");
-        if (!selectedCity) return;
+    // Validación al cambiar país
+    fields.Country.addEventListener("change", () => {
+        updatePlaceholders();
+        validatePhone();
+        validateNIT();
+        validateRequired("Country");
+        loadCities();
+    });
 
-        for (let option of fields.City.options) {
-            if (option.value === selectedCity) {
-                option.selected = true;
-                break;
-            }
-        }
-    }
+    fields.Country.addEventListener("blur", () => validateRequired("Country"));
+    fields.City.addEventListener("blur", () => validateRequired("City"));
 
-    // Ejecutar al cargar la página
+    // Inicialización
     updatePlaceholders();
     loadCities();
-    selectCityOnEdit();
 
     // =======================================
-    // ✔ VALIDACIÓN FINAL
+    // ✔ VALIDACIÓN FINAL AL SUBMIT
     // =======================================
     const form = document.querySelector("form");
 
@@ -151,14 +170,11 @@
         let valid = true;
 
         Object.keys(fields).forEach(key => {
-            if (!fields[key].value || fields[key].value.trim() === "") {
-                errors[key].textContent = `${key} is required`;
-                valid = false;
-            }
+            if (!validateRequired(key)) valid = false;
         });
 
-        validatePhone();
-        validateNIT();
+        if (!validatePhone()) valid = false;
+        if (!validateNIT()) valid = false;
 
         if (!valid) e.preventDefault();
     });

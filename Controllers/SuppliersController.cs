@@ -59,17 +59,56 @@ namespace ProyectoWebCommercialLopez.Controllers
         public async Task<IActionResult> Create([Bind("Id,RazonSocial,NIT,Phone,Email,Address,City,Country,State,CreatedAt,ModifiedAt,CreatedBy,ModifiedBy")] Supplier supplier)
         {
             int userLogged = int.Parse(User.FindFirst("UserId").Value);
+
+            // Normalizar datos
+            supplier.RazonSocial = supplier.RazonSocial?.Trim().ToUpper();
+            supplier.Email = supplier.Email?.Trim().ToLower();
+            supplier.NIT = supplier.NIT?.Trim();
+
             supplier.State = 1;
             supplier.CreatedAt = DateTime.Now;
-            supplier.CreatedBy=userLogged;
-            if (ModelState.IsValid)
-            {
-                _context.Add(supplier);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(supplier);
+            supplier.CreatedBy = userLogged;
+
+            // ============================
+            // 🔥 VALIDACIONES DE DUPLICADOS
+            // ============================
+
+            // RAZON SOCIAL
+            bool rsExists = await _context.Supplier
+                .AnyAsync(s => s.RazonSocial.ToUpper() == supplier.RazonSocial);
+
+            if (rsExists)
+                ModelState.AddModelError("RazonSocial", "A supplier with this business name already exists.");
+
+            // NIT
+            bool nitExists = await _context.Supplier
+                .AnyAsync(s => s.NIT == supplier.NIT);
+
+            if (nitExists)
+                ModelState.AddModelError("NIT", "This NIT is already registered.");
+
+            // EMAIL
+            bool emailExists = await _context.Supplier
+                .AnyAsync(s => s.Email.ToLower() == supplier.Email.ToLower());
+
+            if (emailExists)
+                ModelState.AddModelError("Email", "This email is already registered.");
+
+            // ============================
+            // 🔥 SI FALLA VALIDACIÓN
+            // ============================
+            if (!ModelState.IsValid)
+                return View(supplier);
+
+            // ============================
+            // ✔ GUARDAR EN BD
+            // ============================
+            _context.Add(supplier);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
+
 
         // GET: Suppliers/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -95,36 +134,69 @@ namespace ProyectoWebCommercialLopez.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,RazonSocial,NIT,Phone,Email,Address,City,Country,State,CreatedAt,ModifiedAt,CreatedBy,ModifiedBy")] Supplier supplier)
         {
             if (id != supplier.Id)
-            {
                 return NotFound();
-            }
+
             int userLogged = int.Parse(User.FindFirst("UserId").Value);
+
+            // Normalizar campos
+            supplier.RazonSocial = supplier.RazonSocial?.Trim().ToUpper();
+            supplier.Email = supplier.Email?.Trim().ToLower();
+            supplier.NIT = supplier.NIT?.Trim();
+
             supplier.State = 1;
             supplier.ModifiedAt = DateTime.Now;
             supplier.ModifiedBy = userLogged;
 
-            if (ModelState.IsValid)
+            // ============================
+            // 🔥 VALIDACIONES DE DUPLICADOS
+            // ============================
+
+            // Razon Social duplicada (excepto el mismo)
+            bool rsExists = await _context.Supplier
+                .AnyAsync(s => s.RazonSocial.ToUpper() == supplier.RazonSocial && s.Id != supplier.Id);
+
+            if (rsExists)
+                ModelState.AddModelError("RazonSocial", "Another supplier with this business name already exists.");
+
+            // NIT duplicado
+            bool nitExists = await _context.Supplier
+                .AnyAsync(s => s.NIT == supplier.NIT && s.Id != supplier.Id);
+
+            if (nitExists)
+                ModelState.AddModelError("NIT", "This NIT is already registered by another supplier.");
+
+            // Email duplicado
+            bool emailExists = await _context.Supplier
+                .AnyAsync(s => s.Email.ToLower() == supplier.Email.ToLower() && s.Id != supplier.Id);
+
+            if (emailExists)
+                ModelState.AddModelError("Email", "This email is already registered by another supplier.");
+
+            // ============================
+            // 🔥 SI HAY ERRORES → NO GUARDAR
+            // ============================
+            if (!ModelState.IsValid)
+                return View(supplier);
+
+            // ============================
+            // ✔ ACTUALIZAR EN BD
+            // ============================
+            try
             {
-                try
-                {
-                    _context.Update(supplier);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SupplierExists(supplier.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(supplier);
+                await _context.SaveChangesAsync();
             }
-            return View(supplier);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SupplierExists(supplier.Id))
+                    return NotFound();
+                else
+                    throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
+
 
         // GET: Suppliers/Delete/5
         public async Task<IActionResult> Delete(int? id)

@@ -99,14 +99,14 @@ namespace ProyectoWebCommercialLopez.Controllers
             // Validar contraseña actual
             if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.Password))
             {
-                ViewBag.Error = "La contraseña actual es incorrecta.";
+                ViewBag.Error = "The current password is incorrect.";
                 return View();
             }
 
             // Validar confirmación
             if (newPassword != confirmPassword)
             {
-                ViewBag.Error = "Las contraseñas no coinciden.";
+                ViewBag.Error = "The current password is incorrect.";
                 return View();
             }
 
@@ -120,7 +120,7 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             if (!strongPassword)
             {
-                ViewBag.Error = "La contraseña no cumple con los requisitos de seguridad.";
+                ViewBag.Error = "The password does not meet the security requirements.";
                 return View();
             }
 
@@ -161,7 +161,7 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             if (user == null)
             {
-                ViewBag.Error = "No existe un usuario con ese correo.";
+                ViewBag.Error = "There is no user with that email address..";
                 return View();
             }
 
@@ -184,7 +184,7 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             await SendResetEmail(email, resetLink);
 
-            ViewBag.Success = "Se envió un enlace de recuperación a tu correo.";
+            ViewBag.Success = "A recovery link was sent to your email.";
             return View();
         }
 
@@ -249,7 +249,7 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             if (storedToken == null)
             {
-                return Content("Token inválido o expirado.");
+                return Content("Invalid or expired token.");
             }
 
             ViewBag.Email = storedToken.Email;
@@ -264,7 +264,7 @@ namespace ProyectoWebCommercialLopez.Controllers
         {
             if (newPassword != confirmPassword)
             {
-                ViewBag.Error = "Las contraseñas no coinciden.";
+                ViewBag.Error = "The passwords do not match.";
                 ViewBag.Email = email;
                 return View();
             }
@@ -274,7 +274,7 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             if (user == null)
             {
-                ViewBag.Error = "El usuario no existe.";
+                ViewBag.Error = "The user does not exist.";
                 return View();
             }
 

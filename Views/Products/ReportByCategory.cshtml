@@ -1,28 +1,37 @@
 ﻿@model IEnumerable<ProyectoWebCommercialLopez.Models.ViewModels.CategoryReportVM>
 
-<h2 class="text-3xl font-bold mb-6 text-gray-800">📂 Reporte por Categoría</h2>
+<div class="flex items-center justify-between mb-6">
+    <h2 class="text-3xl font-extrabold text-gray-800 flex items-center gap-2">
+        📂 Reporte por Categoría
+    </h2>
 
-<div class="overflow-x-auto shadow-lg rounded-xl">
-    <table class="min-w-full text-left bg-white">
-        <thead class="bg-gray-800 text-white">
+    <a class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700
+              text-white font-semibold px-5 py-2.5 rounded-lg shadow-md transition"
+       href="@Url.Action("ReportByCategoryPdf", "Products")">
+        <i class="fas fa-file-pdf"></i> Exportar PDF
+    </a>
+</div>
+
+<div class="bg-white shadow-xl rounded-2xl overflow-hidden border">
+    <table class="min-w-full text-left">
+        <thead class="bg-gray-900 text-white uppercase text-sm tracking-wide">
             <tr>
-                <th class="py-3 px-4">Categoría</th>
-                <th class="py-3 px-4">Productos</th>
-                <th class="py-3 px-4">Stock Total</th>
-                <th class="py-3 px-4">Valor Total (Bs)</th>
+                <th class="py-3 px-5">Categoría</th>
+                <th class="py-3 px-5">Productos</th>
+                <th class="py-3 px-5">Stock Total</th>
+                <th class="py-3 px-5">Valor Total (Bs)</th>
             </tr>
         </thead>
 
-        <tbody class="divide-y divide-gray-200">
+        <tbody class="text-gray-700 text-sm">
             @foreach (var c in Model)
             {
-                <tr class="hover:bg-gray-100 transition">
-                    <td class="py-3 px-4">@c.CategoryName</td>
-                    <td class="py-3 px-4">@c.TotalProductos</td>
-                    <td class="py-3 px-4">@c.TotalStock</td>
+                <tr class="hover:bg-gray-100 transition border-b">
+                    <td class="py-3 px-5 font-medium">@c.CategoryName</td>
+                    <td class="py-3 px-5">@c.TotalProductos</td>
+                    <td class="py-3 px-5">@c.TotalStock</td>
 
-                    <!-- FORMATEADO CON 2 DECIMALES -->
-                    <td class="py-3 px-4">
+                    <td class="py-3 px-5 font-semibold text-green-700">
                         @c.ValorTotal.ToString("N2") Bs
                     </td>
                 </tr>
@@ -30,3 +39,11 @@
         </tbody>
     </table>
 </div>
+<div class="mt-6">
+    <a class="inline-flex items-center gap-2 bg-gray-700 hover:bg-gray-800
+              text-white font-semibold px-4 py-2.5 rounded-lg shadow-md transition"
+       href="@Url.Action("Index", "Products")">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
+</div>
+

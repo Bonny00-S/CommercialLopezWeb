@@ -11,19 +11,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-[#1a1a1a] flex items-center justify-center min-h-screen p-4">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-md bg-[#2a2a2a] shadow-2xl rounded-2xl p-8 border border-gray-700">
+    <div class="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
 
         <!-- Título -->
-        <h2 class="text-3xl font-bold text-center text-white mb-6 tracking-wide">
+        <h2 class="text-3xl font-bold text-center text-orange-600 mb-6 tracking-wide">
             Commercial López
         </h2>
 
         <!-- Mensaje de error -->
         @if (ViewBag.Error != null)
         {
-            <div class="bg-red-500 bg-opacity-20 text-red-300 border border-red-500 px-4 py-3 rounded-lg mb-4 text-center">
+            <div class="bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded-lg mb-4 text-center">
                 @ViewBag.Error
             </div>
         }
@@ -33,25 +33,25 @@
 
             <!-- Usuario -->
             <div>
-                <label class="block text-gray-300 font-medium mb-1">Username</label>
+                <label class="block text-gray-700 font-medium mb-1">Username</label>
                 <input type="text" name="UserName"
-                       class="w-full px-4 py-2 bg-[#3a3a3a] text-white border border-gray-600 rounded-lg
+                       class="w-full px-4 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg
                               focus:ring-2 focus:ring-orange-500 focus:outline-none"
                        placeholder="Enter your username" required />
             </div>
 
             <!-- Contraseña -->
             <div>
-                <label class="block text-gray-300 font-medium mb-1">Password</label>
+                <label class="block text-gray-700 font-medium mb-1">Password</label>
                 <input type="password" name="Password"
-                       class="w-full px-4 py-2 bg-[#3a3a3a] text-white border border-gray-600 rounded-lg
+                       class="w-full px-4 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg
                               focus:ring-2 focus:ring-orange-500 focus:outline-none"
                        placeholder="Enter your password" required />
             </div>
 
             <!-- Olvidé mi contraseña -->
             <div class="text-right">
-                <a asp-action="ResetPassword" class="text-orange-400 text-sm hover:text-orange-300 transition">
+                <a asp-action="ResetPassword" class="text-orange-500 text-sm hover:text-orange-600 transition">
                     Forgot my password
                 </a>
             </div>
@@ -59,7 +59,7 @@
             <!-- Botón login -->
             <button type="submit"
                     class="w-full bg-orange-500 text-white py-2 rounded-lg font-semibold
-                           hover:bg-orange-600 transition shadow-lg">
+                           hover:bg-orange-600 transition shadow-md">
                 Sign In
             </button>
 

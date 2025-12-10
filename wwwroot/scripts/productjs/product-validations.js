@@ -1,8 +1,7 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
 
-    console.log("VALIDACIONES CREATE ACTIVAS");
+    console.log("CREATE VALIDATIONS ACTIVE");
 
-    // Obtener campos
     const description = document.getElementById("Description");
     const descriptionError = document.getElementById("descriptionError");
 
@@ -19,22 +18,22 @@
     const form = document.querySelector("form");
 
     // ================================
-    // VALIDACIÓN DESCRIPCIÓN
+    // VALIDATION: DESCRIPTION
     // ================================
     function validateDescription() {
         let text = description.value.toUpperCase().replace(/\s+/g, " ").trimStart();
         description.value = text;
 
         if (text.length === 0) {
-            descriptionError.textContent = "La descripción es obligatoria.";
+            descriptionError.textContent = "Description is required.";
             return false;
         }
         if (text.length < 4) {
-            descriptionError.textContent = "Debe tener mínimo 4 caracteres.";
+            descriptionError.textContent = "Minimum length is 4 characters.";
             return false;
         }
         if (text.length > 50) {
-            descriptionError.textContent = "Máximo 50 caracteres permitidos.";
+            descriptionError.textContent = "Maximum allowed is 50 characters.";
             return false;
         }
 
@@ -43,7 +42,7 @@
     }
 
     // ================================
-    // VALIDACIÓN PRECIO
+    // VALIDATION: PRICE
     // ================================
     function validatePrice() {
         let value = price.value.replace(/[^0-9.,]/g, "").replace(",", ".");
@@ -61,17 +60,17 @@
         price.value = value;
 
         if (value === "") {
-            priceError.textContent = "El precio es obligatorio.";
+            priceError.textContent = "Price is required.";
             return false;
         }
 
         if (isNaN(Number(value))) {
-            priceError.textContent = "Ingrese un número válido.";
+            priceError.textContent = "Enter a valid number.";
             return false;
         }
 
         if (Number(value) <= 0) {
-            priceError.textContent = "Debe ser mayor a 0.";
+            priceError.textContent = "Value must be greater than 0.";
             return false;
         }
 
@@ -80,19 +79,19 @@
     }
 
     // ================================
-    // VALIDACIÓN STOCK
+    // VALIDATION: STOCK
     // ================================
     function validateStock() {
         let value = stock.value.replace(/[^0-9]/g, "");
         stock.value = value;
 
         if (value === "") {
-            stockError.textContent = "El stock es obligatorio.";
+            stockError.textContent = "Stock is required.";
             return false;
         }
 
         if (Number(value) < 0) {
-            stockError.textContent = "No puede ser negativo.";
+            stockError.textContent = "Cannot be negative.";
             return false;
         }
 
@@ -101,11 +100,11 @@
     }
 
     // ================================
-    // VALIDACIÓN IMAGEN (OBLIGATORIA)
+    // VALIDATION: IMAGE
     // ================================
     function validateImage() {
         if (fileInput.files.length === 0) {
-            imageError.textContent = "Debe seleccionar una imagen.";
+            imageError.textContent = "Image is required.";
             return false;
         }
 
@@ -113,12 +112,12 @@
         const validTypes = ["image/jpeg", "image/png", "image/webp"];
 
         if (!validTypes.includes(file.type)) {
-            imageError.textContent = "Formato inválido (solo JPG, PNG, WEBP).";
+            imageError.textContent = "Invalid format (only JPG, PNG, WEBP).";
             return false;
         }
 
-        if (file.size > 3 * 1024 * 1024) { // 3MB
-            imageError.textContent = "La imagen no debe superar los 3MB.";
+        if (file.size > 3 * 1024 * 1024) {
+            imageError.textContent = "Image must not exceed 3MB.";
             return false;
         }
 
@@ -127,10 +126,10 @@
     }
 
     // ================================
-    // PREVIEW DE IMAGEN
+    // IMAGE PREVIEW
     // ================================
     fileInput.addEventListener("change", function () {
-        validateImage(); // marca error si corresponde
+        validateImage();
 
         const file = this.files[0];
         if (!file) return;
@@ -144,14 +143,14 @@
     });
 
     // ================================
-    // EVENTOS EN TIEMPO REAL (input)
+    // REAL-TIME EVENTS
     // ================================
     description.addEventListener("input", validateDescription);
     price.addEventListener("input", validatePrice);
     stock.addEventListener("input", validateStock);
 
     // ================================
-    // EVENTOS al SALIR DEL CAMPO (blur)
+    // BLUR EVENTS
     // ================================
     description.addEventListener("blur", validateDescription);
     price.addEventListener("blur", validatePrice);
@@ -159,7 +158,7 @@
     fileInput.addEventListener("blur", validateImage);
 
     // ================================
-    // VALIDACIÓN AL HACER SUBMIT
+    // SUBMIT VALIDATION
     // ================================
     form.addEventListener("submit", (e) => {
         let v1 = validateDescription();
@@ -169,7 +168,7 @@
 
         if (!v1 || !v2 || !v3 || !v4) {
             e.preventDefault();
-            console.log("❌ Formulario inválido");
+            console.log("❌ Invalid form");
         }
     });
 

@@ -1,35 +1,53 @@
 ﻿@model IEnumerable<ProyectoWebCommercialLopez.Models.Product>
 
-<h2>Reporte de Productos</h2>
+<div class="flex items-center justify-between mb-6">
+    <h2 class="text-3xl font-extrabold text-gray-800 flex items-center gap-2">
+        📦 Reporte de Productos
+    </h2>
 
-<a class="btn btn-danger"
-   href="@Url.Action("ReportProductsPdf", "Products")">
-    Exportar PDF
-</a>
+    <a class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700
+              text-white font-semibold px-5 py-2.5 rounded-lg shadow-md transition"
+       href="@Url.Action("ReportProductsPdf", "Products")">
+        <i class="fas fa-file-pdf"></i> Exportar PDF
+    </a>
+</div>
 
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Descripción</th>
-            <th>Categoría</th>
-            <th>Proveedor</th>
-            <th>Almacén</th>
-            <th>Precio</th>
-            <th>Stock</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+
+<div class="bg-white shadow-xl rounded-2xl overflow-hidden border">
+    <table class="min-w-full text-left">
+        <thead class="bg-gray-900 text-white uppercase text-sm tracking-wide">
             <tr>
-                <td>@item.Description</td>
-                <td>@item.Category.Name</td>
-                <td>@item.Supplier.RazonSocial</td>
-                <td>@item.Warehouse.Name</td>
-                <td>@item.Price Bs</td>
-                <td>@item.Stock</td>
+                <th class="py-3 px-5">Descripción</th>
+                <th class="py-3 px-5">Categoría</th>
+                <th class="py-3 px-5">Proveedor</th>
+                <th class="py-3 px-5">Almacén</th>
+                <th class="py-3 px-5">Precio (Bs)</th>
+                <th class="py-3 px-5">Stock</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+
+        <tbody class="text-gray-700 text-sm">
+            @foreach (var item in Model)
+            {
+                <tr class="hover:bg-gray-100 transition border-b">
+                    <td class="py-3 px-5">@item.Description</td>
+                    <td class="py-3 px-5">@item.Category.Name</td>
+                    <td class="py-3 px-5">@item.Supplier.RazonSocial</td>
+                    <td class="py-3 px-5">@item.Warehouse.Name</td>
+                    <td class="py-3 px-5 font-semibold text-green-700">@item.Price.ToString("N2") Bs</td>
+                    <td class="py-3 px-5">@item.Stock</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-6">
+    <a class="inline-flex items-center gap-2 bg-gray-700 hover:bg-gray-800
+              text-white font-semibold px-4 py-2.5 rounded-lg shadow-md transition"
+       href="@Url.Action("Index", "Products")">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
+</div>
+

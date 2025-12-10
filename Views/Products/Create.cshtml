@@ -4,6 +4,19 @@
     ViewData["Title"] = "Crear Producto";
 }
 
+@if (ViewBag.BlockCreate == true)
+{
+    <div class="bg-red-100 text-red-700 border border-red-300 p-4 rounded mb-6">
+        <strong>⚠ Cannot create product:</strong> @ViewBag.BlockMessage
+    </div>
+
+    <a asp-action="Index" class="text-blue-600 underline">← Back</a>
+
+    <!-- Cancel rendering the form -->
+    return;
+}
+
+
 <h1 class="text-3xl font-bold text-gray-800 mb-6">Crear Producto</h1>
 
 <div class="max-w-2xl bg-white p-6 rounded-xl shadow border border-gray-200">

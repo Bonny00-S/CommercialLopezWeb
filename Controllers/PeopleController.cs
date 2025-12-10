@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -21,6 +24,7 @@ namespace ProyectoWebCommercialLopez.Controllers
         public PeopleController(appDbContextCommercial context)
         {
             _context = context;
+           
         }
 
         // GET: People
@@ -64,14 +68,20 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             if (_context.Person.Any(p => p.CI == person.CI))
             {
-                ModelState.AddModelError("CI", "Este CI ya está registrado.");
+                ModelState.AddModelError("CI", "This Ci is already registered.");
                 return View(person);
             }
+            if (_context.Person.Any(p => p.Phone == person.Phone))
+            {
+                ModelState.AddModelError("Phone", "This Phone is already registered.");
+                return View(person);
+            }
+
 
             // Verificar email duplicado
             if (await _context.Person.AnyAsync(p => p.Email == person.Email))
             {
-                ModelState.AddModelError("Email", "Este correo ya está registrado.");
+                ModelState.AddModelError("Email", "This email is already registered");
                 return View(person);
             }
             if (!ModelState.IsValid)
@@ -141,73 +151,84 @@ namespace ProyectoWebCommercialLopez.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Person person,int Role)
+        public async Task<IActionResult> Edit(int id, Person person, int Role)
         {
             if (id != person.Id)
                 return NotFound();
 
             // 🔹 VALIDACIÓN CI DUPLICADO
             if (await _context.Person.AnyAsync(p => p.CI == person.CI && p.Id != id))
-                ModelState.AddModelError("CI", "Este CI ya está registrado.");
+                ModelState.AddModelError("CI", "This CI is already registered.");
+
+            // 🔹 VALIDACIÓN TELÉFONO DUPLICADO (excluir el mismo ID)
+            if (await _context.Person.AnyAsync(p => p.Phone == person.Phone && p.Id != id))
+                ModelState.AddModelError("Phone", "This Phone is already registered.");
 
             // 🔹 VALIDACIÓN EMAIL DUPLICADO
             if (await _context.Person.AnyAsync(p => p.Email == person.Email && p.Id != id))
-                ModelState.AddModelError("Email", "Este correo ya está registrado.");
+                ModelState.AddModelError("Email", "This email is already registered.");
 
-            // ⚠ Si falla, volver con errores
             if (!ModelState.IsValid)
                 return View(person);
 
-            try
+            // 🔥 Obtener original desde DB
+            var original = await _context.Person
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (original == null)
+                return NotFound();
+
+            // ✅ **DETECTAR SI HUBO CAMBIOS**
+            bool noChanges =
+                original.Name == person.Name &&
+                original.LastName == person.LastName &&
+                original.CI == person.CI &&
+                original.Phone == person.Phone &&
+                original.Email == person.Email &&
+                original.Address == person.Address;
+
+            // Además, validar si el rol no cambió
+            var userOriginal = await _context.User.FirstOrDefaultAsync(u => u.IdPerson == id);
+            bool roleUnchanged = (userOriginal?.Role == Role);
+
+            if (noChanges && roleUnchanged)
             {
-                // 🔹 Obtener datos originales (para no perder CreatedAt y CreatedBy)
-                var original = await _context.Person
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(p => p.Id == id);
-
-                if (original == null)
-                    return NotFound();
-
-                // 🔥 Obtener ID usuario logueado para auditoría
-                int userLogged = int.Parse(User.FindFirst("UserId").Value);
-
-                // 🔹 Mantener datos de creación
-                person.CreatedAt = original.CreatedAt;
-                person.CreatedBy = original.CreatedBy;
-
-                // 🔹 Actualizar campos de modificación
-                person.ModifiedAt = DateTime.Now;
-                person.ModifiedBy = userLogged;
-
-                // 🔹 Actualizar datos en Person
-                _context.Person.Update(person);
-                await _context.SaveChangesAsync();
-
-                // 🔹 Actualizar User relacionado (ya que el rol está en USER)
-                var user = await _context.User.FirstOrDefaultAsync(u => u.IdPerson == id);
-
-                if (user != null)
-                {
-                    user.Role = Role;
-                    user.ModifiedAt = DateTime.Now;
-                    user.ModifiedBy = userLogged;
-
-                    _context.User.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-
-           
-                ViewBag.Success = true;
+                // ✔ No hubo cambios → no guardar nada
+                ViewBag.NoChanges = true;
                 return View(person);
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PersonExists(person.Id))
-                    return NotFound();
 
-                throw;
+            // 🔥 ID de usuario logueado
+            int userLogged = int.Parse(User.FindFirst("UserId").Value);
+
+            // 📌 Mantener datos de creación
+            person.CreatedAt = original.CreatedAt;
+            person.CreatedBy = original.CreatedBy;
+
+            // 📌 Datos de modificación
+            person.ModifiedAt = DateTime.Now;
+            person.ModifiedBy = userLogged;
+
+            // ✔ Actualizar persona
+            _context.Person.Update(person);
+            await _context.SaveChangesAsync();
+
+            // ✔ Actualizar rol si cambió
+            if (userOriginal != null && !roleUnchanged)
+            {
+                userOriginal.Role = Role;
+                userOriginal.ModifiedAt = DateTime.Now;
+                userOriginal.ModifiedBy = userLogged;
+
+                _context.User.Update(userOriginal);
+                await _context.SaveChangesAsync();
             }
+
+            ViewBag.Success = true;
+            return View(person);
         }
+
 
         // GET: People/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -385,6 +406,82 @@ namespace ProyectoWebCommercialLopez.Controllers
             }
         }
         #endregion
+
+        public IActionResult ChangePasswordUser()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePasswordUser(string currentPassword, string newPassword, string confirmPassword)
+        {
+            int userId = int.Parse(User.FindFirst("UserId").Value);
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.IdPerson == userId);
+            if (user == null)
+                return RedirectToAction("Login");
+
+            // Validar contraseña actual
+            if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.Password))
+            {
+                ViewBag.Error = "The current password is incorrect.";
+                return View();
+            }
+
+            // Validar confirmación
+            if (newPassword != confirmPassword)
+            {
+                ViewBag.Error = "The passwords do not match.";
+                return View();
+            }
+
+            // Validaciones fuertes
+            bool strongPassword =
+                newPassword.Length >= 8 &&
+                newPassword.Any(char.IsUpper) &&
+                newPassword.Any(char.IsLower) &&
+                newPassword.Any(char.IsDigit) &&
+                newPassword.Any(ch => "!@#$%^&*(),.?\":{}|<>".Contains(ch));
+
+            if (!strongPassword)
+            {
+                ViewBag.Error = "The password does not meet the security requirements.";
+                return View();
+            }
+
+            // Guardar nueva contraseña
+            user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            user.StatePassword = 0;
+            user.ModifiedAt = DateTime.Now;
+            user.ModifiedBy = userId;
+
+            _context.User.Update(user);
+            await _context.SaveChangesAsync();
+
+            // 🔥 YA NO SE CIERRA SESIÓN — EL USUARIO SIGUE LOGUEADO NORMALMENTE
+
+            ViewBag.Success = "Your password has been updated successfully.";
+            return View();
+        }
+
+
+
+        
+        public async Task<IActionResult> Profile()
+        {
+            int userId = int.Parse(User.FindFirst("UserId").Value);
+
+            var person = await _context.Person
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.Id == userId);
+
+            if (person == null)
+                return NotFound();
+
+            return View(person);
+        }
+       
 
     }
 }
