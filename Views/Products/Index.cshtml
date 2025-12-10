@@ -2,17 +2,136 @@
 
 @{
     ViewData["Title"] = "Productos";
+
+    var categories = ViewBag.Categories as List<Category>;
+    var suppliers = ViewBag.Suppliers as List<Supplier>;
+    var warehouses = ViewBag.Warehouses as List<WareHouse>;
 }
 
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-3xl font-bold text-gray-800">Productos</h1>
 
-    <a asp-action="Create"
-       class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
-        Crear nuevo
-    </a>
+    <div class="flex items-center gap-3">
+
+        <!-- BOTÓN: Productos con Stock Bajo -->
+        <a href="@Url.Action("ReportLowStock", "Products")"
+           class="relative px-4 py-2 bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600 transition">
+            Stock Bajo
+
+            @if (ViewBag.LowStockCount > 0)
+            {
+                <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                    @ViewBag.LowStockCount
+                </span>
+            }
+        </a>
+
+        <!-- CREAR -->
+        <a asp-action="Create"
+           class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+            Crear nuevo
+        </a>
+    </div>
 </div>
 
+
+<!-- 🔍 FILTROS -->
+<form method="get" class="bg-white p-4 rounded-xl shadow mb-6 border border-gray-200">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+
+        <!-- Filtro categoría -->
+        <div>
+            <label class="font-semibold text-gray-700">Categoría</label>
+            <select name="categoryId" class="w-full border rounded p-2">
+                <option value="">-- Todas --</option>
+
+                @if (categories == null || categories.Count == 0)
+                {
+                    <option disabled>No categories available</option>
+                }
+                else
+                {
+                    foreach (var c in categories)
+                    {
+                        <option value="@c.Id">@c.Name</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <!-- Filtro Supplier -->
+        <div>
+            <label class="font-semibold text-gray-700">Supplier</label>
+            <select name="supplierId" class="w-full border rounded p-2">
+                <option value="">-- Todos --</option>
+
+                @if (suppliers == null || suppliers.Count == 0)
+                {
+                    <option disabled>No suppliers available</option>
+                }
+                else
+                {
+                    foreach (var s in suppliers)
+                    {
+                        <option value="@s.Id">@s.RazonSocial</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <!-- Filtro Warehouse -->
+        <div>
+            <label class="font-semibold text-gray-700">Warehouse</label>
+            <select name="warehouseId" class="w-full border rounded p-2">
+                <option value="">-- Todos --</option>
+
+                @if (warehouses == null || warehouses.Count == 0)
+                {
+                    <option disabled>No warehouses available</option>
+                }
+                else
+                {
+                    foreach (var w in warehouses)
+                    {
+                        <option value="@w.Id">@w.Name</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <!-- Buscador -->
+        <div>
+            <label class="font-semibold text-gray-700">Buscar</label>
+            <input type="text" id="searchInput" name="search" placeholder="Descripción..."
+                   class="w-full border rounded p-2" />
+        </div>
+
+        <!-- Ordenamiento -->
+        <div>
+            <label class="font-semibold text-gray-700">Ordenar por</label>
+            <select name="sort" class="w-full border rounded p-2">
+                <option value="">-- Default --</option>
+                <option value="desc_asc">Descripción (A-Z)</option>
+                <option value="desc_desc">Descripción (Z-A)</option>
+                <option value="price_asc">Precio (Menor)</option>
+                <option value="price_desc">Precio (Mayor)</option>
+                <option value="stock_asc">Stock (Menor)</option>
+                <option value="stock_desc">Stock (Mayor)</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="text-right mt-4">
+        <button class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+            Aplicar filtros
+        </button>
+    </div>
+</form>
+
+
+
+<!-- TABLA DE PRODUCTOS -->
 <div class="overflow-x-auto shadow-lg rounded-xl border border-gray-200 bg-white">
     <table class="min-w-full text-sm">
         <thead class="bg-gray-100 border-b border-gray-200">
@@ -30,7 +149,6 @@
             {
                 <tr class="hover:bg-gray-50 transition">
 
-                    <!-- Imagen -->
                     <td class="px-6 py-4">
                         @if (!string.IsNullOrEmpty(item.Image))
                         {
@@ -45,34 +163,23 @@
                         }
                     </td>
 
-                    <!-- Descripción -->
-                    <td class="px-6 py-4 text-gray-800">
-                        @item.Description
-                    </td>
+                    <td class="px-6 py-4 text-gray-800">@item.Description</td>
 
-                    <!-- Precio -->
                     <td class="px-6 py-4 text-gray-700 font-medium">
                         $@item.Price.ToString("0.00")
                     </td>
 
-                    <!-- Stock -->
-                    <td class="px-6 py-4 text-gray-700">
-                        @item.Stock
-                    </td>
+                    <td class="px-6 py-4 text-gray-700">@item.Stock</td>
 
-                    <!-- Acciones -->
                     <td class="px-6 py-4 text-right space-x-2">
-
                         <a asp-action="Details" asp-route-id="@item.Id"
                            class="inline-block px-3 py-1 text-green-600 hover:text-green-800 font-medium">
                             Detalles
                         </a>
-
                         <a asp-action="Edit" asp-route-id="@item.Id"
                            class="inline-block px-3 py-1 text-blue-600 hover:text-blue-800 font-medium">
                             Editar
                         </a>
-
                         <a asp-action="Delete" asp-route-id="@item.Id"
                            class="inline-block px-3 py-1 text-red-600 hover:text-red-800 font-medium">
                             Eliminar
@@ -84,3 +191,27 @@
         </tbody>
     </table>
 </div>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const searchInput = document.getElementById("searchInput");
+            const rows = document.querySelectorAll("table tbody tr");
+
+            searchInput.addEventListener("input", function () {
+                const text = this.value.toLowerCase();
+
+                rows.forEach(row => {
+                    const description = row.querySelector("td:nth-child(2)")?.textContent.toLowerCase();
+
+                    if (description.includes(text)) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+
+        });
+    </script>
+}

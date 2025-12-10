@@ -29,12 +29,60 @@ namespace ProyectoWebCommercialLopez.Controllers
         }
 
 
-        // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            int? categoryId,
+            int? supplierId,
+            int? warehouseId,
+            string search,
+            string sort)
         {
-            var appDbContextCommercial = _context.Product.Include(p => p.Category).Include(p => p.Supplier).Include(p => p.Warehouse);
-            return View(await appDbContextCommercial.ToListAsync());
+            var query = _context.Product
+                .Include(p => p.Category)
+                .Include(p => p.Supplier)
+                .Include(p => p.Warehouse)
+                .AsQueryable();
+
+            // 🔍 FILTROS
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+
+            if (supplierId.HasValue)
+                query = query.Where(p => p.SupplierId == supplierId.Value);
+
+            if (warehouseId.HasValue)
+                query = query.Where(p => p.WarehouseId == warehouseId.Value);
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(p => p.Description.Contains(search));
+
+            // 🔽 ORDENAMIENTO
+            query = sort switch
+            {
+                "price_asc" => query.OrderBy(p => p.Price),
+                "price_desc" => query.OrderByDescending(p => p.Price),
+
+                "stock_asc" => query.OrderBy(p => p.Stock),
+                "stock_desc" => query.OrderByDescending(p => p.Stock),
+
+                "desc_asc" => query.OrderBy(p => p.Description),
+                "desc_desc" => query.OrderByDescending(p => p.Description),
+
+                _ => query.OrderBy(p => p.Id)
+            };
+
+            var productos = await query.ToListAsync();
+
+            // Filtros (listas)
+            ViewBag.Categories = await _context.Category.ToListAsync();
+            ViewBag.Suppliers = await _context.Supplier.ToListAsync();
+            ViewBag.Warehouses = await _context.WareHouse.ToListAsync();
+
+            // 🔥 Stock bajo
+            ViewBag.LowStockCount = productos.Count(p => p.Stock < 10);
+
+            return View(productos);
         }
+
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -57,14 +105,46 @@ namespace ProyectoWebCommercialLopez.Controllers
             return View(product);
         }
 
-        // GET: Products/Create
         public IActionResult Create()
         {
+            List<string> missing = new List<string>();
+
+            if (!_context.Category.Any())
+                missing.Add("categories");
+
+            if (!_context.Supplier.Any())
+                missing.Add("suppliers");
+
+            if (!_context.WareHouse.Any())
+                missing.Add("warehouses");
+
+            // Si faltan uno o más…
+            if (missing.Count > 0)
+            {
+                ViewBag.BlockCreate = true;
+
+                // Mensaje correcto según cantidad
+                if (missing.Count == 1)
+                    ViewBag.BlockMessage = $"You must register {missing[0]} before creating a product.";
+                else if (missing.Count == 2)
+                    ViewBag.BlockMessage = $"You must register both {missing[0]} and {missing[1]} before creating a product.";
+                else
+                    ViewBag.BlockMessage = "You must register categories, suppliers, and warehouses before creating a product.";
+
+                return View();
+            }
+
+            // Si no falta nada → carga normal
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Name");
             ViewData["SupplierId"] = new SelectList(_context.Supplier, "Id", "RazonSocial");
             ViewData["WarehouseId"] = new SelectList(_context.WareHouse, "Id", "Name");
+
+            ViewBag.BlockCreate = false;
+
             return View();
         }
+
+
 
         // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -234,14 +314,28 @@ namespace ProyectoWebCommercialLopez.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Product.FindAsync(id);
+
             if (product != null)
             {
+         
+                if (!string.IsNullOrEmpty(product.Image))
+                {
+                    string folder = Path.Combine(_env.WebRootPath, "images/products");
+                    string filePath = Path.Combine(folder, product.Image);
+
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath); 
+                    }
+                }
+
                 _context.Product.Remove(product);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
 
         public IActionResult ReportsIndex()
@@ -263,17 +357,16 @@ namespace ProyectoWebCommercialLopez.Controllers
         public async Task<IActionResult> ReportProductsPdf()
         {
             var products = await _context.Product
-          .Include(p => p.Category)
-          .Include(p => p.Supplier)
-          .Include(p => p.Warehouse)
-          .Select(p => new
-          {
-              p.Description,
-              p.Price,
-              p.Stock,
-              
-          })
-          .ToListAsync();
+                .Include(p => p.Category)
+                .Include(p => p.Supplier)
+                .Include(p => p.Warehouse)
+                .Select(p => new
+                {
+                    p.Description,
+                    p.Price,
+                    p.Stock
+                })
+                .ToListAsync();
 
             var pdf = _pdfService.CreateReport(
                 "Reporte de Productos",
@@ -281,7 +374,11 @@ namespace ProyectoWebCommercialLopez.Controllers
                 products
             );
 
-            return File(pdf, "application/pdf", "Reporte_Productos.pdf");
+            // 📌 Crear nombre dinámico usando fecha y hora actual
+            string date = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+            string fileName = $"Reporte_Productos_{date}.pdf";
+
+            return File(pdf, "application/pdf", fileName);
         }
 
 
@@ -295,6 +392,34 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             return View(lowStock);
         }
+
+        public async Task<IActionResult> ReportLowStockPdf()
+        {
+            var lowStock = await _context.Product
+                .Include(p => p.Category)
+                .Where(p => p.Stock < 10)
+                .Select(p => new
+                {
+                    p.Description,
+                    Category = p.Category.Name,
+                    p.Price,
+                    p.Stock
+                })
+                .ToListAsync();
+
+            var pdf = _pdfService.CreateReport(
+                "Productos con Stock Bajo",
+                User.Identity.Name,
+                lowStock
+            );
+
+            // 📌 Crear nombre dinámico con fecha y hora
+            string date = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+            string fileName = $"Reporte_LowStock_{date}.pdf";
+
+            return File(pdf, "application/pdf", fileName);
+        }
+
 
         public async Task<IActionResult> ReportByCategory()
         {
@@ -310,6 +435,33 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             return View(data);
         }
+
+        public async Task<IActionResult> ReportByCategoryPdf()
+        {
+            var data = await _context.Category
+                .Select(c => new CategoryReportVM
+                {
+                    CategoryName = c.Name,
+                    TotalProductos = c.Products.Count(),
+                    TotalStock = c.Products.Sum(p => p.Stock),
+                    ValorTotal = c.Products.Sum(p => p.Stock * p.Price)
+                })
+                .ToListAsync();
+
+            var pdf = _pdfService.CreateReport(
+                "Reporte por Categoría",
+                User.Identity.Name,
+                data
+            );
+
+            // 📌 Crear nombre dinámico con fecha y hora
+            string date = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+            string fileName = $"Reporte_Categorias_{date}.pdf";
+
+            return File(pdf, "application/pdf", fileName);
+        }
+
+
 
         private bool ProductExists(int id)
         {

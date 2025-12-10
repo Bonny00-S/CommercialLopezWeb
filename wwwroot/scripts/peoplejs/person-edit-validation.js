@@ -39,7 +39,7 @@
         // -------------------------------------------------------------
         const ciRegex = /^[0-9]{8,10}$/;
         if (!ciRegex.test(ci.value.trim())) {
-            ciError.textContent = "El CI debe tener solo números (8 a 10 dígitos).";
+            ciError.textContent = "The ID must only have numbers (8 to 10 digits).";
             valid = false;
         } else {
             ciError.textContent = "";
@@ -51,7 +51,7 @@
         const textRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+(\s[A-Za-zÁÉÍÓÚáéíóúÑñ]+)*$/;
 
         if (!textRegex.test(name.value.trim())) {
-            nameError.textContent = "Solo letras y un espacio entre nombres.";
+            nameError.textContent = "Just letters and a space between names";
             valid = false;
         } else {
             nameError.textContent = "";
@@ -61,7 +61,7 @@
         // VALIDAR APELLIDO
         // -------------------------------------------------------------
         if (!textRegex.test(lastName.value.trim())) {
-            lastNameError.textContent = "Solo letras y un espacio entre apellidos.";
+            lastNameError.textContent = "Only letters and a space between surnames.";
             valid = false;
         } else {
             lastNameError.textContent = "";
@@ -74,7 +74,7 @@
         const today = new Date();
 
         if (!dateBirth.value) {
-            dateBirthError.textContent = "Seleccione una fecha válida.";
+            dateBirthError.textContent = "Please select a valid date";
             valid = false;
         } else {
             let age = today.getFullYear() - birth.getFullYear();
@@ -85,10 +85,10 @@
             }
 
             if (birth > today) {
-                dateBirthError.textContent = "No puede ingresar una fecha futura.";
+                dateBirthError.textContent = "You cannot enter a future date.";
                 valid = false;
             } else if (age < 16) {
-                dateBirthError.textContent = "Debe tener al menos 16 años.";
+                dateBirthError.textContent = "You must be at least 16 years old.";
                 valid = false;
             } else {
                 dateBirthError.textContent = "";
@@ -99,7 +99,7 @@
         // VALIDAR DIRECCIÓN (mínimo 5 caracteres)
         // -------------------------------------------------------------
         if (address.value.trim().length < 5) {
-            addressError.textContent = "Ingrese una dirección válida.";
+            addressError.textContent = "Enter a valid address.";
             valid = false;
         } else {
             addressError.textContent = "";
@@ -110,7 +110,7 @@
         // -------------------------------------------------------------
         const phoneRegex = /^[0-9]{8}$/;
         if (!phoneRegex.test(phone.value.trim())) {
-            phoneError.textContent = "El teléfono debe tener 8 dígitos.";
+            phoneError.textContent = "The phone number must have 8 digits.";
             valid = false;
         } else {
             phoneError.textContent = "";
@@ -121,7 +121,7 @@
         // -------------------------------------------------------------
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email.value.trim())) {
-            emailError.textContent = "Ingrese un email válido.";
+            emailError.textContent = "Enter a valid email address.";
             valid = false;
         } else {
             emailError.textContent = "";
@@ -131,7 +131,7 @@
         // VALIDAR ROL
         // -------------------------------------------------------------
         if (role.value === "") {
-            roleError.textContent = "Debe seleccionar un rol.";
+            roleError.textContent = "You must select a role.";
             valid = false;
         } else {
             roleError.textContent = "";

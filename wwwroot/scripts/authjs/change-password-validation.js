@@ -3,50 +3,54 @@ const confirmPasswordInput = document.getElementById("confirmPassword");
 const passwordError = document.getElementById("passwordError");
 const confirmError = document.getElementById("confirmError");
 
-// Reglas
+// Rules
 const regexMinLength = /.{8,}/;
 const regexUpper = /[A-Z]/;
 const regexLower = /[a-z]/;
 const regexNumber = /[0-9]/;
 const regexSpecial = /[!@#$%^&*(),.?":{}|<>]/;
 
-// 🔥 VALIDACIÓN EN TIEMPO REAL NUEVA CONTRASEÑA
+// 🔥 REAL-TIME VALIDATION NEW PASSWORD
 newPasswordInput.addEventListener("input", function () {
     const pwd = newPasswordInput.value;
 
     passwordError.textContent = "";
+    passwordError.classList.remove("text-green-600");
+    passwordError.classList.add("text-red-600");
 
     if (!regexMinLength.test(pwd)) {
-        passwordError.textContent = "Debe tener mínimo 8 caracteres.";
+        passwordError.textContent = "Must be at least 8 characters long.";
     } else if (!regexUpper.test(pwd)) {
-        passwordError.textContent = "Debe contener al menos 1 mayúscula.";
+        passwordError.textContent = "Must contain at least 1 uppercase letter.";
     } else if (!regexLower.test(pwd)) {
-        passwordError.textContent = "Debe contener al menos 1 minúscula.";
+        passwordError.textContent = "Must contain at least 1 lowercase letter.";
     } else if (!regexNumber.test(pwd)) {
-        passwordError.textContent = "Debe contener al menos 1 número.";
+        passwordError.textContent = "Must contain at least 1 number.";
     } else if (!regexSpecial.test(pwd)) {
-        passwordError.textContent = "Debe contener al menos 1 caracter especial.";
+        passwordError.textContent = "Must contain at least 1 special character.";
     } else {
-        passwordError.textContent = "✔ Contraseña válida";
+        passwordError.textContent = "✔ Valid password";
         passwordError.classList.remove("text-red-600");
         passwordError.classList.add("text-green-600");
     }
 });
 
-// 🔥 VALIDACIÓN EN TIEMPO REAL CONFIRMAR CONTRASEÑA
+// 🔥 REAL-TIME VALIDATION CONFIRM PASSWORD
 confirmPasswordInput.addEventListener("input", function () {
     confirmError.textContent = "";
+    confirmError.classList.remove("text-green-600");
+    confirmError.classList.add("text-red-600");
 
     if (confirmPasswordInput.value !== newPasswordInput.value) {
-        confirmError.textContent = "Las contraseñas no coinciden.";
+        confirmError.textContent = "Passwords do not match.";
     } else if (confirmPasswordInput.value.length > 0) {
-        confirmError.textContent = "✔ Coinciden";
+        confirmError.textContent = "✔ Passwords match";
         confirmError.classList.remove("text-red-600");
         confirmError.classList.add("text-green-600");
     }
 });
 
-// 🔥 VALIDACIÓN FINAL EN SUBMIT
+// 🔥 FINAL VALIDATION ON SUBMIT
 document.getElementById("changePasswordForm").addEventListener("submit", function (e) {
     let isValid = true;
 
@@ -62,12 +66,12 @@ document.getElementById("changePasswordForm").addEventListener("submit", functio
         !regexNumber.test(newPassword) ||
         !regexSpecial.test(newPassword)) {
 
-        passwordError.textContent = "La contraseña no cumple los requisitos.";
+        passwordError.textContent = "Password does not meet the required rules.";
         isValid = false;
     }
 
     if (newPassword !== confirmPassword) {
-        confirmError.textContent = "Las contraseñas no coinciden.";
+        confirmError.textContent = "Passwords do not match.";
         isValid = false;
     }
 
