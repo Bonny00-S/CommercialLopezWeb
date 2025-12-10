@@ -229,7 +229,7 @@ namespace ProyectoWebCommercialLopez.Controllers
             }            return View(sale);
         }
 
-        // GET: Sales/Delete/5
+        // POST: Sales/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -240,6 +240,13 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             if (sale != null)
             {
+                var userId = int.Parse(User.FindFirst("UserId")?.Value ?? "0");
+
+                // Marcar como anulado en lugar de eliminar
+                sale.Status = "Anulado";
+                sale.ModifiedAt = DateTime.Now;
+                sale.ModifiedBy = userId;
+
                 // Restaurar stock de productos
                 if (sale.SaleDetails != null)
                 {
@@ -249,14 +256,14 @@ namespace ProyectoWebCommercialLopez.Controllers
                         if (product != null)
                         {
                             product.Stock += (short)detail.Quantity;
+                            product.ModifiedAt = DateTime.Now;
+                            product.ModifiedBy = userId;
                             _context.Update(product);
                         }
                     }
-
-                    _context.SaleDetail.RemoveRange(sale.SaleDetails);
                 }
                 
-                _context.Sale.Remove(sale);
+                _context.Update(sale);
                 await _context.SaveChangesAsync();
             }
 

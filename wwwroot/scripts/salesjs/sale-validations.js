@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // CARGAR PRODUCTOS EN MODAL
     // ================================
     function loadProductsInModal() {
-        modalProductId.innerHTML = '<option value="">-- Seleccione un producto --</option>';
+        modalProductId.innerHTML = '<option value="">-- Select a product --</option>';
         
         selectedProducts.forEach(product => {
             const option = document.createElement("option");
@@ -153,12 +153,12 @@ document.addEventListener("DOMContentLoaded", function () {
         modalQuantityError.textContent = "";
 
         if (!productId) {
-            alert("Seleccione un producto");
+            alert("Select a product");
             return;
         }
 
         if (quantity <= 0) {
-            modalQuantityError.textContent = "La cantidad debe ser mayor a 0.";
+            modalQuantityError.textContent = "The amount must be greater than 0.";
             return;
         }
 
@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const price = parseFloat(selectedOption.dataset.price);
 
         if (quantity > stock) {
-            modalQuantityError.textContent = `Stock insuficiente. Disponible: ${stock}`;
+            modalQuantityError.textContent = `Insufficient stock. Available: ${stock}`;
             return;
         }
 
@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ELIMINAR DEL CARRITO
     // ================================
     window.removeFromCart = function (index) {
-        if (confirm("¿Eliminar este producto?")) {
+        if (confirm("Remove this product?")) {
             cart.splice(index, 1);
             renderCart();
             calculateTotals();
@@ -263,7 +263,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ================================
     function validateInvoiceType() {
         if (!invoiceType.value) {
-            invoiceTypeError.textContent = "Debe seleccionar un tipo de comprobante.";
+            invoiceTypeError.textContent = "You must select a type of receipt.";
             return false;
         }
         invoiceTypeError.textContent = "";
@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function validatePaymentType() {
         if (!paymentType.value) {
-            paymentTypeError.textContent = "Debe seleccionar un método de pago.";
+            paymentTypeError.textContent = "You must select a payment method.";
             return false;
         }
         paymentTypeError.textContent = "";
@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function validateProducts() {
         if (cart.length === 0) {
-            productsError.textContent = "Debe agregar al menos un producto.";
+            productsError.textContent = "You must add at least one product.";
             return false;
         }
         productsError.textContent = "";
@@ -294,17 +294,17 @@ document.addEventListener("DOMContentLoaded", function () {
         const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
 
         if (dvalue < 0) {
-            discountError.textContent = "El descuento no puede ser negativo.";
+            discountError.textContent = "The discount cannot be negative.";
             return false;
         }
 
         if (dtype === "percent" && dvalue > 100) {
-            discountError.textContent = "El porcentaje no puede ser mayor a 100%.";
+            discountError.textContent = "The percentage cannot be greater than 100%.";
             return false;
         }
 
         if (dtype === "amount" && dvalue > subtotal) {
-            discountError.textContent = "El descuento no puede ser mayor al subtotal.";
+            discountError.textContent = "The discount cannot be greater than the subtotal.";
             return false;
         }
 
@@ -324,7 +324,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const v4 = validateDiscount();
 
         if (!v1 || !v2 || !v3 || !v4) {
-            console.log("❌ Formulario de venta inválido");
+            console.log("❌ Invalid sales form");
             return;
         }
 
@@ -376,11 +376,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert(result.message);
                 window.location.href = '/Sales/Index';
             } else {
-                alert(result.message || "Error al registrar la venta");
+                alert(result.message || "Error registering the sale");
             }
         } catch (error) {
             console.error("Error:", error);
-            alert("Error al procesar la venta");
+            alert("Error processing the sale");
         }
     });
 

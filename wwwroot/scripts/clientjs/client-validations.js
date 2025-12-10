@@ -25,37 +25,37 @@ document.addEventListener("DOMContentLoaded", function () {
         documentNumber.value = text;
 
         if (text.length === 0) {
-            documentNumberError.textContent = "El CI/NIT es obligatorio.";
+            documentNumberError.textContent = "The CI/NIT is mandatory.";
             return false;
         }
 
         // Validar caracteres peligrosos (seguridad)
-        const dangerousChars = /[<>'"\/\\;=()]/;
+        const dangerousChars = /[<>'"\/ \\;=()]/;
         if (dangerousChars.test(text)) {
-            documentNumberError.textContent = "Contiene caracteres no permitidos.";
+            documentNumberError.textContent = "Contains prohibited characters.";
             return false;
         }
 
         // Validar solo números, letras y guiones
         const regex = /^[0-9A-Za-z-]+$/;
         if (!regex.test(text)) {
-            documentNumberError.textContent = "Solo se permiten números, letras y guiones.";
+            documentNumberError.textContent = "Only numbers, letters, and hyphens are allowed.";
             return false;
         }
 
         if (text.length < 6) {
-            documentNumberError.textContent = "Debe tener mínimo 6 caracteres.";
+            documentNumberError.textContent = "It must have a minimum of 6 characters.";
             return false;
         }
 
         if (text.length > 15) {
-            documentNumberError.textContent = "Máximo 15 caracteres permitidos.";
+            documentNumberError.textContent = "Maximum 15 characters allowed.";
             return false;
         }
 
         // No puede empezar con cero (solo para CI numérico)
         if (/^0/.test(text)) {
-            documentNumberError.textContent = "El CI/NIT no puede empezar con cero.";
+            documentNumberError.textContent = "The CI/NIT cannot start with zero.";
             return false;
         }
 
@@ -64,57 +64,32 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ================================
-    // VALIDACIÓN RAZÓN SOCIAL
+    // VALIDACIÓN REASON SOCIAL
     // ================================
     function validateCompanyName() {
-        let text = companyName.value.replace(/\s+/g, " ").trimStart();
+        let text = companyName.value.trim();
         companyName.value = text;
 
         if (text.length === 0) {
-            companyNameError.textContent = "La Razón Social es obligatoria.";
+            companyNameError.textContent = "The Reason Social is mandatory.";
             return false;
         }
 
-        // Validar secuencias peligrosas (seguridad)
-        const dangerousPatterns = /<script|<iframe|javascript:|onerror=|onclick=|DROP TABLE|INSERT INTO|DELETE FROM|SELECT.*FROM/i;
-        if (dangerousPatterns.test(text)) {
-            companyNameError.textContent = "Contiene contenido no permitido.";
+        if (text.length < 2 || text.length > 100) {
+            companyNameError.textContent = "The full name must be between 2 and 100 characters.";
             return false;
         }
 
-        // Rechazar caracteres especiales peligrosos
-        const dangerousChars = /[<>'"\/\\;=]/;
-        if (dangerousChars.test(text)) {
-            companyNameError.textContent = "Contiene caracteres no permitidos.";
+        // Verificar que no tenga dobles espacios
+        if (text.includes("  ")) {
+            companyNameError.textContent = "Multiple spaces in a row are not allowed.";
             return false;
         }
 
-        if (text.length < 3) {
-            companyNameError.textContent = "Debe tener mínimo 3 caracteres.";
-            return false;
-        }
-
-        if (text.length > 150) {
-            companyNameError.textContent = "Máximo 150 caracteres permitidos.";
-            return false;
-        }
-
-        // Validar caracteres permitidos (letras, números, acentos, espacios, ampersand, puntos, comas, guiones)
-        const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9&.,\s-]+$/;
+        // Solo letras, espacios y acentos
+        const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/;
         if (!regex.test(text)) {
-            companyNameError.textContent = "Contiene caracteres no válidos.";
-            return false;
-        }
-
-        // No aceptar solo números
-        if (/^[0-9\s.,&-]+$/.test(text)) {
-            companyNameError.textContent = "Debe contener al menos letras.";
-            return false;
-        }
-
-        // No aceptar solo símbolos
-        if (/^[.,&\s-]+$/.test(text)) {
-            companyNameError.textContent = "No puede contener solo símbolos.";
+            companyNameError.textContent = "The name can only contain letters and spaces.";
             return false;
         }
 
@@ -136,21 +111,21 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (text.length > 20) {
-            phoneError.textContent = "Máximo 20 caracteres permitidos.";
+            phoneError.textContent = "Maximum 20 characters allowed.";
             return false;
         }
 
         // Validar solo números y símbolos +, -, (), espacios
         const regex = /^[0-9+\-\s()]+$/;
         if (!regex.test(text)) {
-            phoneError.textContent = "Solo números y símbolos +, -, (), espacios.";
+            phoneError.textContent = "Only numbers and symbols +, -, (), spaces.";
             return false;
         }
 
         // Validar cantidad de dígitos
         const phoneDigits = text.replace(/\D/g, '');
         if (phoneDigits.length > 0 && (phoneDigits.length < 7 || phoneDigits.length > 15)) {
-            phoneError.textContent = "Debe contener entre 7 y 15 dígitos.";
+            phoneError.textContent = "It must contain between 7 and 15 digits.";
             return false;
         }
 
@@ -162,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // VALIDACIÓN DIRECCIÓN (OPCIONAL)
     // ================================
     function validateAddress() {
-        let text = address.value.replace(/\s+/g, " ").trimStart();
+        let text = address.value.replace(/\s+/g, " ").trim();
         address.value = text;
 
         // Si está vacío, es válido (campo opcional)
@@ -171,8 +146,15 @@ document.addEventListener("DOMContentLoaded", function () {
             return true;
         }
 
-        if (text.length > 200) {
-            addressError.textContent = "Máximo 200 caracteres permitidos.";
+        if (text.length < 5 || text.length > 200) {
+            addressError.textContent = "La dirección debe tener entre 5 y 200 caracteres.";
+            return false;
+        }
+
+        // Validar caracteres permitidos: letras, números, espacios y símbolos comunes
+        const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 #.,\-\/ºº°()]+$/;
+        if (!regex.test(text)) {
+            addressError.textContent = "La dirección contiene caracteres no permitidos.";
             return false;
         }
 
@@ -207,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!v1 || !v2 || !v3 || !v4) {
             e.preventDefault();
-            console.log("❌ Formulario de cliente inválido");
+            console.log("❌ Invalid customer form");
         }
     });
 

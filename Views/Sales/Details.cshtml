@@ -48,22 +48,16 @@
 
                 <div>
                     <p class="text-sm text-gray-600">Estado</p>
-                    @if (Model.Status == "Completada")
-                    {
-                        <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                            Completada
-                        </span>
-                    }
-                    else if (Model.Status == "Cancelada")
+                    @if (Model.Status == "Anulado")
                     {
                         <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
-                            Cancelada
+                            ❌ Anulado
                         </span>
                     }
                     else
                     {
-                        <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                            Pendiente
+                        <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                            ✓ Completado
                         </span>
                     }
                 </div>

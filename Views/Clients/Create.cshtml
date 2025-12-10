@@ -4,7 +4,7 @@
     ViewData["Title"] = "Registrar Cliente";
 }
 
-<h1 class="text-2xl font-bold mb-4">Registrar Nuevo Cliente</h1>
+<h1 class="text-2xl font-bold mb-4">Register New Customer</h1>
 
 <div class="max-w-4xl bg-white p-6 rounded-xl shadow border border-gray-200">
     <form asp-action="Create" method="post" class="space-y-6">
@@ -24,7 +24,7 @@
                 <span asp-validation-for="DocumentNumber" class="text-red-600 text-sm mt-1"></span>
             </div>
 
-            <!-- Razón Social -->
+            <!-- Reason Social -->
             <div>
                 <label asp-for="CompanyName" class="block text-sm font-semibold text-gray-700 mb-1"></label>
                 <input asp-for="CompanyName" 
@@ -36,7 +36,7 @@
                 <span asp-validation-for="CompanyName" class="text-red-600 text-sm mt-1"></span>
             </div>
 
-            <!-- Teléfono -->
+            <!-- Phone -->
             <div>
                 <label asp-for="Phone" class="block text-sm font-semibold text-gray-700 mb-1"></label>
                 <input asp-for="Phone" 
@@ -52,7 +52,7 @@
             <!-- Estado (oculto, siempre activo al crear) -->
             <input asp-for="State" type="hidden" value="1" />
 
-            <!-- Dirección (Ocupar toda la fila) -->
+            <!-- Address (Full width) -->
             <div class="md:col-span-2">
                 <label asp-for="Address" class="block text-sm font-semibold text-gray-700 mb-1"></label>
                 <textarea asp-for="Address" 
@@ -71,7 +71,7 @@
         <div class="flex justify-between mt-4">
             <a asp-action="Index" class="text-gray-600 hover:text-gray-800">← Volver</a>
             <button type="submit" class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                Guardar Cliente
+                Save Client
             </button>
         </div>
 

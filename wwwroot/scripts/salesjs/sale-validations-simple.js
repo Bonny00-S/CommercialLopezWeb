@@ -125,19 +125,19 @@ function updateProductSubtotal() {
 // Agregar producto al carrito
 btnAddProductToCart.addEventListener('click', function() {
     if (!selectedProduct) {
-        productError.textContent = 'Debe buscar y seleccionar un producto';
+        productError.textContent = 'You must search and select a product';
         return;
     }
     
     const quantity = parseInt(productQuantityInput.value);
     
     if (!quantity || quantity <= 0) {
-        productError.textContent = 'La cantidad debe ser mayor a 0';
+        productError.textContent = 'Quantity must be greater than 0';
         return;
     }
     
     if (quantity > selectedProduct.Stock) {
-        productError.textContent = `La cantidad supera el stock disponible (${selectedProduct.Stock})`;
+        productError.textContent = `The quantity exceeds the available stock. (${selectedProduct.Stock})`;
         return;
     }
     
@@ -189,7 +189,7 @@ searchDocumentInput.addEventListener('input', async function() {
             const clients = await response.json();
             
             if (clients.length === 0) {
-                clientSearchResults.innerHTML = '<div class="p-3 text-gray-500 text-sm">No se encontraron clientes</div>';
+                clientSearchResults.innerHTML = '<div class="p-3 text-gray-500 text-sm">No clients found</div>';
                 clientSearchResults.classList.remove('hidden');
                 return;
             }
@@ -211,7 +211,7 @@ searchDocumentInput.addEventListener('input', async function() {
             clientSearchResults.classList.remove('hidden');
         }
     } catch (error) {
-        searchClientError.textContent = 'Error al buscar clientes';
+        searchClientError.textContent = 'Error when searching for clients';
         console.error(error);
     }
 });
@@ -232,7 +232,7 @@ function selectClient(client) {
     clientNameInput.value = `${client.companyName} (${client.documentNumber})`;
     searchDocumentInput.value = client.documentNumber;
     clientSearchResults.classList.add('hidden');
-    searchClientSuccess.textContent = `✓ Cliente seleccionado: ${client.companyName}`;
+    searchClientSuccess.textContent = `✓ Selected client: ${client.companyName}`;
     clientError.textContent = '';
 }
 
@@ -250,7 +250,7 @@ btnClearClient.addEventListener('click', function() {
 // Renderizar carrito
 function renderCart() {
     if (cart.length === 0) {
-        productsList.innerHTML = '<p class="text-gray-500 text-center py-4">No hay productos agregados</p>';
+        productsList.innerHTML = '<p class="text-gray-500 text-center py-4">No products added</p>';
         return;
     }
     
@@ -262,9 +262,9 @@ function renderCart() {
             <div class="flex items-center justify-between">
                 <div class="flex-1">
                     <p class="font-semibold">${item.Description}</p>
-                    <p class="text-sm text-gray-600">Precio: Bs. ${item.UnitPrice.toFixed(2)}</p>
+                    <p class="text-sm text-gray-600">Price: Bs. ${item.UnitPrice.toFixed(2)}</p>
                     <div class="mt-2">
-                        <label class="text-sm text-gray-600">Cantidad:</label>
+                        <label class="text-sm text-gray-600">Amount:</label>
                         <input type="number" min="1" max="${item.MaxStock}" value="${item.Quantity}" 
                                id="quantity-${index}"
                                onchange="updateCartQuantity(${index}, this.value)"
@@ -298,7 +298,7 @@ function updateCartQuantity(index, newQuantity) {
     if (errorDiv) errorDiv.textContent = '';
     
     if (isNaN(quantity) || quantity < 1) {
-        if (errorDiv) errorDiv.textContent = 'La cantidad debe ser mayor a 0';
+        if (errorDiv) errorDiv.textContent = 'Quantity must be greater than 0';
         if (inputField) inputField.value = item.Quantity;
         return;
     }
@@ -339,7 +339,7 @@ discountInput.addEventListener('input', calculateTotals);
 function validateClient() {
     const clientError = document.getElementById('clientError');
     if (!clientIdInput.value) {
-        clientError.textContent = 'Debe buscar y seleccionar un cliente';
+        clientError.textContent = 'You must search and select a client';
         return false;
     }
     clientError.textContent = '';
@@ -349,7 +349,7 @@ function validateClient() {
 function validatePaymentType() {
     const paymentTypeError = document.getElementById('paymentTypeError');
     if (!paymentTypeSelect.value) {
-        paymentTypeError.textContent = 'Debe seleccionar un tipo de pago';
+        paymentTypeError.textContent = 'You must select a payment type';
         return false;
     }
     paymentTypeError.textContent = '';
@@ -359,7 +359,7 @@ function validatePaymentType() {
 function validateProducts() {
     const productsError = document.getElementById('productsError');
     if (cart.length === 0) {
-        productsError.textContent = 'Debe agregar al menos un producto';
+        productsError.textContent = 'You must add at least one product';
         return false;
     }
     productsError.textContent = '';
@@ -372,12 +372,12 @@ function validateDiscount() {
     const subtotal = cart.reduce((sum, item) => sum + item.Subtotal, 0);
     
     if (discount < 0) {
-        discountError.textContent = 'El descuento no puede ser negativo';
+        discountError.textContent = 'The discount cannot be negative.';
         return false;
     }
     
     if (discount > subtotal) {
-        discountError.textContent = 'El descuento no puede ser mayor al subtotal';
+        discountError.textContent = 'The discount cannot be greater than the subtotal';
         return false;
     }
     
@@ -424,20 +424,20 @@ saleForm.addEventListener('submit', async function(e) {
         
         if (response.ok) {
             const result = await response.json();
-            showNotification(result.message || 'Venta registrada exitosamente', 'success');
+            showNotification(result.message || 'Sale successfully registered', 'success');
             setTimeout(() => {
                 window.location.href = '/Sales/Index';
             }, 1500);
         } else {
             const result = await response.json();
-            showNotification(result.message || 'Error al guardar la venta', 'error');
+            showNotification(result.message || 'Error saving the sale', 'error');
             btnSaveSale.disabled = false;
-            btnSaveSale.textContent = 'Guardar Venta';
+            btnSaveSale.textContent = 'Save Sale';
         }
     } catch (error) {
         showNotification('Error al comunicarse con el servidor', 'error');
         btnSaveSale.disabled = false;
-        btnSaveSale.textContent = 'Guardar Venta';
+        btnSaveSale.textContent = 'Save Sale';
     }
 });
 

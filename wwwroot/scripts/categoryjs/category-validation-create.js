@@ -18,7 +18,7 @@
         noDoubleSpaces(nameInput);
 
     if (nameInput.value.trim().length < 3) {
-        nameError.textContent = "El nombre debe tener al menos 3 caracteres.";
+        nameError.textContent = "Name must be at least 3 characters.";
             } else {
         nameError.textContent = "";
             }
@@ -28,7 +28,7 @@
         noDoubleSpaces(descriptionInput);
 
     if (descriptionInput.value.trim().length < 5) {
-        descriptionError.textContent = "La descripción debe tener al menos 5 caracteres.";
+        descriptionError.textContent = "Description must be at least 5 characters.";
             } else {
         descriptionError.textContent = "";
             }
@@ -40,12 +40,12 @@
         let valid = true;
 
     if (nameInput.value.trim().length < 3) {
-        nameError.textContent = "El nombre debe tener al menos 3 caracteres.";
+        nameError.textContent = "Name must be at least 3 characters.";
     valid = false;
             }
 
     if (descriptionInput.value.trim().length < 5) {
-        descriptionError.textContent = "La descripción debe tener al menos 5 caracteres.";
+        descriptionError.textContent = "Description must be at least 5 characters.";
     valid = false;
             }
 

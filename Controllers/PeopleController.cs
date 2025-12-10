@@ -62,9 +62,9 @@ namespace ProyectoWebCommercialLopez.Controllers
             int userLogged = int.Parse(User.FindFirst("UserId").Value);
 
 
-            if (await _context.Person.AnyAsync(p => p.CI == person.CI))
+            if (_context.Person.Any(p => p.CI == person.CI))
             {
-                ModelState.AddModelError("ci", "Este CI ya está registrado.");
+                ModelState.AddModelError("CI", "Este CI ya está registrado.");
                 return View(person);
             }
 
@@ -148,7 +148,7 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             // 🔹 VALIDACIÓN CI DUPLICADO
             if (await _context.Person.AnyAsync(p => p.CI == person.CI && p.Id != id))
-                ModelState.AddModelError("ci", "Este CI ya está registrado.");
+                ModelState.AddModelError("CI", "Este CI ya está registrado.");
 
             // 🔹 VALIDACIÓN EMAIL DUPLICADO
             if (await _context.Person.AnyAsync(p => p.Email == person.Email && p.Id != id))

@@ -1,0 +1,153 @@
+@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Ingresos por Método de Pago";
+}
+
+<div class="container mx-auto px-4 py-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">💳 Reportes</h1>
+        <a asp-action="Index" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+            ← Volver a Reportes
+        </a>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="bg-white p-4 rounded-xl shadow mb-6">
+        <form method="get" asp-action="IncomeByPaymentMethod" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Desde</label>
+                <input type="date" name="fechaDesde" value="@ViewBag.FechaDesde" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Hasta</label>
+                <input type="date" name="fechaHasta" value="@ViewBag.FechaHasta" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div class="flex items-end gap-2">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    🔍 Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- GRÁFICO DE TARJETAS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        @foreach (var item in Model)
+        {
+            string colorClass = item.MetodoPago switch
+            {
+                "Efectivo" => "from-green-500 to-green-600",
+                "Tarjeta" => "from-blue-500 to-blue-600",
+                "QR" => "from-purple-500 to-purple-600",
+                "Transferencia" => "from-yellow-500 to-yellow-600",
+                _ => "from-gray-500 to-gray-600"
+            };
+
+            string icon = item.MetodoPago switch
+            {
+                "Efectivo" => "💵",
+                "Tarjeta" => "💳",
+                "QR" => "📱",
+                "Transferencia" => "🏦",
+                _ => "💰"
+            };
+
+            <div class="bg-gradient-to-r @colorClass p-6 rounded-xl shadow-lg text-white">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-3xl">@icon</div>
+                    <div class="text-right">
+                        <div class="text-sm opacity-90">@item.MetodoPago</div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-sm opacity-90">Cantidad</div>
+                    <div class="text-2xl font-bold">@item.CantidadVentas ventas</div>
+                </div>
+                <div class="mt-2 pt-2 border-t border-white border-opacity-30">
+                    <div class="text-sm opacity-90">Total Ingresos</div>
+                    <div class="text-3xl font-bold">Bs. @item.TotalIngresos.ToString("N2")</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- TABLA DETALLADA -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        <div class="px-6 py-4 bg-gray-50 border-b">
+            <h2 class="text-lg font-semibold text-gray-800">Resumen Detallado</h2>
+        </div>
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Método de Pago</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cantidad de Ventas</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Ingresos</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Promedio</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">% del Total</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @{
+                    decimal totalGeneral = Model.Sum(x => x.TotalIngresos);
+                }
+                @foreach (var item in Model)
+                {
+                    decimal promedio = item.TotalIngresos / item.CantidadVentas;
+                    decimal porcentaje = totalGeneral > 0 ? (item.TotalIngresos / totalGeneral) * 100 : 0;
+
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            @item.MetodoPago
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            @item.CantidadVentas
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
+                            Bs. @item.TotalIngresos.ToString("N2")
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            Bs. @promedio.ToString("N2")
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <div class="flex items-center">
+                                <div class="flex-1">
+                                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-blue-600 rounded-full" style="width: @porcentaje.ToString("F2")%"></div>
+                                    </div>
+                                </div>
+                                <span class="ml-2 text-gray-600 font-medium">@porcentaje.ToString("F1")%</span>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                <tr class="bg-gray-50 font-bold">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        TOTAL
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        @Model.Sum(x => x.CantidadVentas)
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">
+                        Bs. @totalGeneral.ToString("N2")
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        -
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        100%
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        @if (!Model.Any())
+        {
+            <div class="p-12 text-center text-gray-500">
+                <p class="text-lg">No se encontraron ventas en el período seleccionado.</p>
+            </div>
+        }
+    </div>
+</div>

@@ -25,7 +25,7 @@
             return false;
         }
         if (text.length < 4) {
-            descriptionError.textContent = "Debe tener mínimo 4 caracteres.";
+            descriptionError.textContent = "Must be at least 4 characters.";
             return false;
         }
         if (text.length > 50) {
@@ -48,7 +48,7 @@
         price.value = parts.join(".");
 
         if (value === "") {
-            priceError.textContent = "El precio es obligatorio.";
+            priceError.textContent = "Price is required.";
             return false;
         }
         if (isNaN(Number(value))) {
@@ -56,7 +56,7 @@
             return false;
         }
         if (Number(value) <= 0) {
-            priceError.textContent = "Debe ser mayor a 0.";
+            priceError.textContent = "Must be greater than 0.";
             return false;
         }
 
@@ -69,7 +69,7 @@
         stock.value = value;
 
         if (value.length === 0) {
-            stockError.textContent = "El stock es obligatorio.";
+            stockError.textContent = "Stock is required.";
             return false;
         }
         if (Number(value) < 0) {

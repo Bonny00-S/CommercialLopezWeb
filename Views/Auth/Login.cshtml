@@ -33,26 +33,26 @@
 
             <!-- Usuario -->
             <div>
-                <label class="block text-gray-300 font-medium mb-1">Usuario</label>
+                <label class="block text-gray-300 font-medium mb-1">Username</label>
                 <input type="text" name="UserName"
                        class="w-full px-4 py-2 bg-[#3a3a3a] text-white border border-gray-600 rounded-lg
                               focus:ring-2 focus:ring-orange-500 focus:outline-none"
-                       placeholder="Ingrese su usuario" required />
+                       placeholder="Enter your username" required />
             </div>
 
             <!-- Contraseña -->
             <div>
-                <label class="block text-gray-300 font-medium mb-1">Contraseña</label>
+                <label class="block text-gray-300 font-medium mb-1">Password</label>
                 <input type="password" name="Password"
                        class="w-full px-4 py-2 bg-[#3a3a3a] text-white border border-gray-600 rounded-lg
                               focus:ring-2 focus:ring-orange-500 focus:outline-none"
-                       placeholder="Ingrese su contraseña" required />
+                       placeholder="Enter your password" required />
             </div>
 
             <!-- Olvidé mi contraseña -->
             <div class="text-right">
                 <a asp-action="ResetPassword" class="text-orange-400 text-sm hover:text-orange-300 transition">
-                    Olvidé mi contraseña
+                    Forgot my password
                 </a>
             </div>
 
@@ -60,7 +60,7 @@
             <button type="submit"
                     class="w-full bg-orange-500 text-white py-2 rounded-lg font-semibold
                            hover:bg-orange-600 transition shadow-lg">
-                Iniciar Sesión
+                Sign In
             </button>
 
         </form>

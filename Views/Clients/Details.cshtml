@@ -32,33 +32,6 @@
             <dd class="mt-1 text-lg text-gray-900">@(Model?.Address ?? "No proporcionada")</dd>
         </div>
 
-        <div class="border-b pb-3">
-            <dt class="text-sm font-semibold text-gray-600">@Html.DisplayNameFor(model => model.State)</dt>
-            <dd class="mt-1 text-lg">
-                @if (Model?.State == 1)
-                {
-                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">Activo</span>
-                }
-                else
-                {
-                    <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">Inactivo</span>
-                }
-            </dd>
-        </div>
-
-        <div class="border-b pb-3">
-            <dt class="text-sm font-semibold text-gray-600">@Html.DisplayNameFor(model => model.CreatedAt)</dt>
-            <dd class="mt-1 text-gray-700">@Model?.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
-        </div>
-
-        @if (Model?.ModifiedAt != null)
-        {
-            <div class="border-b pb-3">
-                <dt class="text-sm font-semibold text-gray-600">@Html.DisplayNameFor(model => model.ModifiedAt)</dt>
-                <dd class="mt-1 text-gray-700">@Model?.ModifiedAt?.ToString("dd/MM/yyyy HH:mm")</dd>
-            </div>
-        }
-
     </dl>
 
 </div>

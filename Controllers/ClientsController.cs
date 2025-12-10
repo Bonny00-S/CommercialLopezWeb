@@ -64,15 +64,15 @@ namespace ProyectoWebCommercialLopez.Controllers
                 var docNumber = client.DocumentNumber.Trim();
 
                 // Validar caracteres peligrosos
-                if (docNumber.Any(c => "<>'\"\\/;=()".Contains(c)))
+                if (docNumber.Any(c => "<>'\"\\/ \\;=()".Contains(c)))
                 {
-                    ModelState.AddModelError("DocumentNumber", "El CI/NIT contiene caracteres no permitidos");
+                    ModelState.AddModelError("DocumentNumber", "The CI/NIT contains prohibited characters");
                 }
 
                 // No puede empezar con cero
                 if (docNumber.StartsWith("0"))
                 {
-                    ModelState.AddModelError("DocumentNumber", "El CI/NIT no puede empezar con cero");
+                    ModelState.AddModelError("DocumentNumber", "The CI/NIT cannot start with zero");
                 }
 
                 // Verificar duplicados
@@ -81,51 +81,39 @@ namespace ProyectoWebCommercialLopez.Controllers
                 
                 if (existingClient != null)
                 {
-                    ModelState.AddModelError("DocumentNumber", "Ya existe un cliente registrado con este CI/NIT");
+                    ModelState.AddModelError("DocumentNumber", "There is already a registered customer with this CI/NIT");
                 }
             }
 
             // ============================================
-            // VALIDACIONES DE SEGURIDAD Y FORMATO RAZÓN SOCIAL
+            // VALIDACIONES DE SEGURIDAD Y FORMATO REASON SOCIAL
             // ============================================
+            // Validaciones de Reason Social
             if (!string.IsNullOrWhiteSpace(client.CompanyName))
             {
                 var companyName = client.CompanyName.Trim();
 
-                // Validar secuencias peligrosas
-                var dangerousPatterns = new[] { "<script", "<iframe", "javascript:", "onerror=", "onclick=", 
-                                                "DROP TABLE", "INSERT INTO", "DELETE FROM", "SELECT" };
-                if (dangerousPatterns.Any(pattern => companyName.Contains(pattern, StringComparison.OrdinalIgnoreCase)))
+                // Validar longitud
+                if (companyName.Length < 2 || companyName.Length > 100)
                 {
-                    ModelState.AddModelError("CompanyName", "La Razón Social contiene contenido no permitido");
+                    ModelState.AddModelError("CompanyName", "The full name must be between 2 and 100 characters.");
                 }
 
-                // Validar caracteres peligrosos
-                if (companyName.Any(c => "<>'\"\\/;=".Contains(c)))
+                // Validar que no tenga múltiples espacios seguidos
+                if (companyName.Contains("  "))
                 {
-                    ModelState.AddModelError("CompanyName", "La Razón Social contiene caracteres no permitidos");
+                    ModelState.AddModelError("CompanyName", "Multiple spaces in a row are not allowed.");
                 }
 
-                // No aceptar solo números
-                if (System.Text.RegularExpressions.Regex.IsMatch(companyName, @"^[0-9\s.,&-]+$"))
+                // Validar solo letras, espacios y acentos
+                if (!System.Text.RegularExpressions.Regex.IsMatch(companyName, @"^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$"))
                 {
-                    ModelState.AddModelError("CompanyName", "La Razón Social debe contener al menos letras");
+                    ModelState.AddModelError("CompanyName", "The name can only contain letters and spaces.");
                 }
-
-                // No aceptar solo símbolos
-                if (System.Text.RegularExpressions.Regex.IsMatch(companyName, @"^[.,&\s-]+$"))
-                {
-                    ModelState.AddModelError("CompanyName", "La Razón Social no puede contener solo símbolos");
-                }
-
-                // Verificar duplicados por Razón Social
-                var existingByName = await _context.Client
-                    .FirstOrDefaultAsync(c => c.CompanyName.ToLower() == companyName.ToLower());
-                
-                if (existingByName != null)
-                {
-                    ModelState.AddModelError("CompanyName", "Ya existe un cliente con esta Razón Social");
-                }
+            }
+            else
+            {
+                ModelState.AddModelError("CompanyName", "The Reason Social is mandatory..");
             }
 
             // Validar formato de teléfono si se proporciona
@@ -134,7 +122,7 @@ namespace ProyectoWebCommercialLopez.Controllers
                 var phoneDigits = new string(client.Phone.Where(char.IsDigit).ToArray());
                 if (phoneDigits.Length < 7 || phoneDigits.Length > 15)
                 {
-                    ModelState.AddModelError("Phone", "El teléfono debe tener entre 7 y 15 dígitos");
+                    ModelState.AddModelError("Phone", "The phone number must be between 7 and 15 digits.");
                 }
             }
 
@@ -154,7 +142,7 @@ namespace ProyectoWebCommercialLopez.Controllers
                 _context.Add(client);
                 await _context.SaveChangesAsync();
                 
-                TempData["SuccessMessage"] = "Cliente registrado exitosamente";
+                TempData["SuccessMessage"] = "Customer successfully registered";
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -287,7 +275,7 @@ namespace ProyectoWebCommercialLopez.Controllers
         {
             if (string.IsNullOrEmpty(document))
             {
-                return BadRequest(new { message = "Debe proporcionar un número de documento" });
+                return BadRequest(new { message = "You must provide a document number" });
             }
 
             var client = await _context.Client
@@ -296,7 +284,7 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             if (client == null)
             {
-                return NotFound(new { message = "Cliente no encontrado" });
+                return NotFound(new { message = "Client not found" });
             }
 
             return Ok(new

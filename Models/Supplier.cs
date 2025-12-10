@@ -8,31 +8,31 @@ namespace ProyectoWebCommercialLopez.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "La razón social es obligatoria.")]
-        [StringLength(150, ErrorMessage = "La razón social no puede superar los 150 caracteres.")]
+        [Required(ErrorMessage = "The reason social is mandatory.")]
+        [StringLength(150, ErrorMessage = "The reason social it cannot exceed 150 characters.")]
         public string? RazonSocial { get; set; }
 
-        [Required(ErrorMessage = "El NIT es obligatorio.")]
-        [StringLength(20, ErrorMessage = "El NIT no puede superar los 20 caracteres.")]
+        [Required(ErrorMessage = "The NIT is mandatory.")]
+        [StringLength(20, ErrorMessage = "The NIT cannot exceed 20 characters.")]
         public string? NIT { get; set; }
 
-        [StringLength(20, ErrorMessage = "El teléfono no puede superar los 20 caracteres.")]
+        [StringLength(20, ErrorMessage = "The phone number cannot exceed 20 characters.")]
         public string? Phone { get; set; }
 
-        [EmailAddress(ErrorMessage = "Debe ingresar un correo electrónico válido.")]
-        [StringLength(120, ErrorMessage = "El email no puede superar los 120 caracteres.")]
+        [EmailAddress(ErrorMessage = "You must enter a valid email address.")]
+        [StringLength(120, ErrorMessage = "The email cannot exceed 120 characters.")]
         public string? Email { get; set; }
 
-        [StringLength(200, ErrorMessage = "La dirección no puede superar los 200 caracteres.")]
+        [StringLength(200, ErrorMessage = "The address cannot exceed 200 characters.")]
         public string? Address { get; set; }
 
-        [StringLength(100, ErrorMessage = "La ciudad no puede superar los 100 caracteres.")]
+        [StringLength(100, ErrorMessage = "The city cannot exceed 100 characters.")]
         public string? City { get; set; }
 
-        [StringLength(100, ErrorMessage = "El país no puede superar los 100 caracteres.")]
+        [StringLength(100, ErrorMessage = "The country name cannot exceed 100 characters.")]
         public string? Country { get; set; }
 
-        [Range(0, 1, ErrorMessage = "El estado debe ser 0 (Inactivo) o 1 (Activo).")]
+        [Range(0, 1, ErrorMessage = "The state must be 0 (Inactive) or 1 (Active).")]
         public int State { get; set; }
 
         [DataType(DataType.DateTime)]
