@@ -1,0 +1,40 @@
+﻿@{
+    Layout = null;
+    var usuario = User.Identity?.Name ?? "Desconocido";
+    var fecha = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            padding: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body class="bg-white">
+
+    <!-- ENCABEZADO DEL PDF -->
+    <div class="flex items-center mb-6">
+        <img src="/images/logo.png" alt="Logo" class="w-20 h-auto mr-4" />
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">Commercial López</h2>
+            <p class="text-gray-600">Reporte generado: @fecha</p>
+            <p class="text-gray-600">Generado por: @usuario</p>
+        </div>
+    </div>
+
+    <hr class="my-4" />
+
+    @RenderBody()
+</body>
+</html>

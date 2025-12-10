@@ -1,0 +1,32 @@
+﻿@model IEnumerable<ProyectoWebCommercialLopez.Models.ViewModels.CategoryReportVM>
+
+<h2 class="text-3xl font-bold mb-6 text-gray-800">📂 Reporte por Categoría</h2>
+
+<div class="overflow-x-auto shadow-lg rounded-xl">
+    <table class="min-w-full text-left bg-white">
+        <thead class="bg-gray-800 text-white">
+            <tr>
+                <th class="py-3 px-4">Categoría</th>
+                <th class="py-3 px-4">Productos</th>
+                <th class="py-3 px-4">Stock Total</th>
+                <th class="py-3 px-4">Valor Total (Bs)</th>
+            </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200">
+            @foreach (var c in Model)
+            {
+                <tr class="hover:bg-gray-100 transition">
+                    <td class="py-3 px-4">@c.CategoryName</td>
+                    <td class="py-3 px-4">@c.TotalProductos</td>
+                    <td class="py-3 px-4">@c.TotalStock</td>
+
+                    <!-- FORMATEADO CON 2 DECIMALES -->
+                    <td class="py-3 px-4">
+                        @c.ValorTotal.ToString("N2") Bs
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

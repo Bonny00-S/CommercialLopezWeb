@@ -3,9 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoWebCommercialLopez.Data;
 using ProyectoWebCommercialLopez.Middleware;
 using ProyectoWebCommercialLopez.Models;
+using ProyectoWebCommercialLopez.Services;
 using System.Globalization;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+QuestPDF.Settings.License = LicenseType.Community;
 
 builder.Services.AddDbContext<appDbContextCommercial>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -21,6 +24,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<PdfService>();
+
+
+
 
 var app = builder.Build();
 

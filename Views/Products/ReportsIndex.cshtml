@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Reportes";
+}
+
+<h2 class="text-3xl font-bold mb-6 text-gray-800">📊 Panel de Reportes</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <!-- Reporte General -->
+    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-2xl transition">
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">Reporte de Productos</h3>
+        <p class="text-gray-600 mb-4">
+            Ver todos los productos registrados con categoría, proveedor y stock.
+        </p>
+
+        <a href="@Url.Action("ReportProducts", "Products")"
+           class="block text-center w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition">
+            Ver Reporte
+        </a>
+    </div>
+
+    <!-- Reporte Stock Bajo -->
+    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-2xl transition">
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">Stock Bajo</h3>
+        <p class="text-gray-600 mb-4">
+            Productos con stock menor a 10 (alertas automáticas).
+        </p>
+
+        <a href="@Url.Action("ReportLowStock", "Products")"
+           class="block text-center w-full bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 rounded-lg transition">
+            Ver Reporte
+        </a>
+    </div>
+
+    <!-- Reporte por Categoría -->
+    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-2xl transition">
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">Reporte por Categoría</h3>
+        <p class="text-gray-600 mb-4">
+            Cantidad de productos por categoría y valor económico total.
+        </p>
+
+        <a href="@Url.Action("ReportByCategory", "Products")"
+           class="block text-center w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition">
+            Ver Reporte
+        </a>
+    </div>
+
+</div>

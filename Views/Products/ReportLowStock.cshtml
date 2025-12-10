@@ -1,0 +1,25 @@
+﻿@model IEnumerable<ProyectoWebCommercialLopez.Models.Product>
+
+<h2>Productos con Stock Bajo</h2>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Stock</th>
+            <th>Precio</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr class="@(p.Stock < 5 ? "table-danger" : "table-warning")">
+                <td>@p.Description</td>
+                <td>@p.Category.Name</td>
+                <td>@p.Stock</td>
+                <td>@p.Price Bs</td>
+            </tr>
+        }
+    </tbody>
+</table>
