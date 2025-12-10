@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoWebCommercialLopez.Data;
 using ProyectoWebCommercialLopez.Models;
+using ProyectoWebCommercialLopez.Models.ViewModels;
+using ProyectoWebCommercialLopez.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +17,15 @@ namespace ProyectoWebCommercialLopez.Controllers
     public class ProductsController : Controller
     {
         private readonly appDbContextCommercial _context;
+        private readonly PdfService _pdfService;
 
         private readonly IWebHostEnvironment _env;
 
-        public ProductsController(appDbContextCommercial context, IWebHostEnvironment env)
+        public ProductsController(appDbContextCommercial context, IWebHostEnvironment env, PdfService pdfService)
         {
             _context = context;
             _env = env;
+            _pdfService = pdfService;
         }
 
 
@@ -237,6 +241,74 @@ namespace ProyectoWebCommercialLopez.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+
+        public IActionResult ReportsIndex()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ReportProducts()
+        {
+            var products = await _context.Product
+                .Include(p => p.Category)
+                .Include(p => p.Supplier)
+                .Include(p => p.Warehouse)
+                .ToListAsync();
+
+            return View(products);
+        }
+
+        public async Task<IActionResult> ReportProductsPdf()
+        {
+            var products = await _context.Product
+          .Include(p => p.Category)
+          .Include(p => p.Supplier)
+          .Include(p => p.Warehouse)
+          .Select(p => new
+          {
+              p.Description,
+              p.Price,
+              p.Stock,
+              
+          })
+          .ToListAsync();
+
+            var pdf = _pdfService.CreateReport(
+                "Reporte de Productos",
+                User.Identity.Name,
+                products
+            );
+
+            return File(pdf, "application/pdf", "Reporte_Productos.pdf");
+        }
+
+
+
+        public async Task<IActionResult> ReportLowStock()
+        {
+            var lowStock = await _context.Product
+                .Include(p => p.Category)
+                .Where(p => p.Stock < 10)
+                .ToListAsync();
+
+            return View(lowStock);
+        }
+
+        public async Task<IActionResult> ReportByCategory()
+        {
+            var data = await _context.Category
+                .Select(c => new CategoryReportVM
+                {
+                    CategoryName = c.Name,
+                    TotalProductos = c.Products.Count(),
+                    TotalStock = c.Products.Sum(p => p.Stock),
+                    ValorTotal = c.Products.Sum(p => p.Stock * p.Price)
+                })
+                .ToListAsync();
+
+            return View(data);
         }
 
         private bool ProductExists(int id)

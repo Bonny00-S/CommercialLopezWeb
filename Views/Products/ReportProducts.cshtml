@@ -1,0 +1,35 @@
+﻿@model IEnumerable<ProyectoWebCommercialLopez.Models.Product>
+
+<h2>Reporte de Productos</h2>
+
+<a class="btn btn-danger"
+   href="@Url.Action("ReportProductsPdf", "Products")">
+    Exportar PDF
+</a>
+
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Proveedor</th>
+            <th>Almacén</th>
+            <th>Precio</th>
+            <th>Stock</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Description</td>
+                <td>@item.Category.Name</td>
+                <td>@item.Supplier.RazonSocial</td>
+                <td>@item.Warehouse.Name</td>
+                <td>@item.Price Bs</td>
+                <td>@item.Stock</td>
+            </tr>
+        }
+    </tbody>
+</table>
